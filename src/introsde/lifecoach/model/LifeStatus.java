@@ -17,17 +17,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
-import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementDecl;
-import javax.xml.bind.annotation.XmlElementRef;
-import javax.xml.bind.annotation.XmlRegistry;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.namespace.QName;
 import javax.persistence.OneToOne;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -38,6 +32,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 @Entity
 @Table(name = "LifeStatus")
+
 @NamedQuery(name = "LifeStatus.findAll", query = "SELECT l FROM LifeStatus l")
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement
@@ -70,20 +65,6 @@ public class LifeStatus implements Serializable {
 
 	public LifeStatus() {
 	}
-
-
-	//@XmlElementRef(name="measure")
-	//@JsonProperty("measure")
-	//private JAXBElement<String> measureName;
-	
-	/*public String measureName(){
-		return this.measureDefinition.getMeasureName();
-	}*/
-	
-	/*@XmlElement(name="measure")
-	public JAXBElement<String> getMeasureName() {
-		return new JAXBElement<String>(new QName("measure"), String.class, this.measureDefinition.getMeasureName());
-	}*/
 
 	public int getIdMeasure() {
 		return this.idMeasure;
@@ -119,6 +100,14 @@ public class LifeStatus implements Serializable {
 		this.person = person;
 	}
 
+	@Override
+	public String toString(){
+		return "LifeStatus(id:" + this.idMeasure +
+					"\tidMeasureDefinition: " + this.measureDefinition + 
+					"\tidPerson: " + this.person + 
+					"\tvalue: " + this.value;
+	}
+	
 	// Database operations
 	// Notice that, for this example, we create and destroy and entityManager on each operation. 
 	// How would you change the DAO to not having to create the entity manager every time? 
@@ -164,13 +153,5 @@ public class LifeStatus implements Serializable {
 	    em.remove(p);
 	    tx.commit();
 	    LifeCoachDao.instance.closeConnections(em);
-	}
-}
-
-@XmlRegistry
-class XMLObjectFactory{
-	@XmlElementDecl(name="measure")
-	public JAXBElement<String>createMeasureName(String measureName){
-		return new JAXBElement<String>(new QName("measure"), String.class, measureName);
 	}
 }
