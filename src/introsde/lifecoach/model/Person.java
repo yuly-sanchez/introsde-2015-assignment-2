@@ -12,7 +12,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -31,6 +30,7 @@ public class Person implements Serializable {
         pkColumnName="name", valueColumnName="seq",
         pkColumnValue="Person")
     @Column(name="idPerson")
+    @XmlElement(name="id")
     private int idPerson;
     
     @Column(name="name")
@@ -65,13 +65,15 @@ public class Person implements Serializable {
     public List<LifeStatus> getLifeStatus() {
         return lifeStatus;
     }
-    // add below all the getters and setters of all the private attributes
-    
-    // getters
+
+	public void setLifeStatus(List<LifeStatus> lifeStatus) {
+		this.lifeStatus = lifeStatus;
+	}
+
+	// getters
     public int getIdPerson(){
         return idPerson;
     }
-
     public String getLastname(){
         return lastname;
     }
@@ -107,6 +109,14 @@ public class Person implements Serializable {
     public void setEmail(String email){
         this.email = email;
     }
+    
+    @Override
+	public String toString(){
+		return "Person(id:" + this.idPerson +
+					"\tfirstname: " + this.name + 
+					"\tlastname: " + this.lastname + 
+					"\tbirthdate: " + this.birthdate + ")";
+	}
     
     public static Person getPersonById(int personId) {
         EntityManager em = LifeCoachDao.instance.createEntityManager();
