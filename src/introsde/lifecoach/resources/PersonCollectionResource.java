@@ -1,6 +1,7 @@
 package introsde.lifecoach.resources;
 
-import introsde.lifecoach.model.Person;
+import introsde.lifecoach.model.*;
+import introsde.lifecoach.wrapper.HealthMeasureHistoryListWrapper;
 
 import java.io.IOException;
 import java.util.List;
@@ -66,15 +67,46 @@ public class PersonCollectionResource {
         return String.valueOf(count);
     }
 
+    /**
+     * Request #4
+     * @param person
+     * @return	the newly created person with its assigned id and if a healthprofile is included, create also those measurements for the new person
+     * @throws IOException
+     */
     @POST
     @Produces({MediaType.APPLICATION_JSON ,  MediaType.APPLICATION_XML})
     @Consumes({MediaType.APPLICATION_JSON ,  MediaType.APPLICATION_XML})
     public Person newPerson(Person person) throws IOException {
-        System.out.println("Creating new person...123");            
-        return Person.savePerson(person);
+        System.out.println("Creating new person...");
+        if(person.getLifeStatus() == null){
+        	return Person.savePerson(person);
+        }else{
+        	//DA COMPLETARE
+        	return Person.savePerson(person);
+        }
     }
     
 
+    @GET
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Path("{idPerson}/{measureType}")
+    public List<HealthMeasureHistory> getMeasureHistory(@PathParam("idPerson") int idPerson, @PathParam("measureType") String measureType){
+    	List<HealthMeasureHistory> hm = HealthMeasureHistory.getHealthMeasureHistory(idPerson, measureType);
+    	for(HealthMeasureHistory h : hm){
+    		System.out.println(h.toString());
+    	}
+    	return hm;
+    }
+    /*public HealthMeasureHistoryListWrapper getMeasureHistory(@PathParam("idPerson") int idPerson, @PathParam("measureType") String measureType){
+    	HealthMeasureHistoryListWrapper hp = new HealthMeasureHistoryListWrapper();
+    	System.out.println("Getting MeasureHistory to " + idPerson + " measureType " + measureType);
+    	hp.setListMeasure(HealthMeasureHistory.getHealthMeasureHistory(idPerson, measureType));
+    	for(HealthMeasureHistory h : hp.getListMeasure()){
+    		System.out.println(h.toString());
+    	}
+    	return hp;
+    }*/
+    
     // Defines that the next path parameter after the base url is
     // treated as a parameter and passed to the PersonResources
     // Allows to type http://localhost:599/base_url/1
@@ -88,4 +120,5 @@ public class PersonCollectionResource {
     public PersonResource getPerson(@PathParam("personId") int id) {
         return new PersonResource(uriInfo, request, id);
     }
+    
 }
