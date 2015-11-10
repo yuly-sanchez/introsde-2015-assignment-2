@@ -12,8 +12,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlValue;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 
@@ -85,6 +83,11 @@ public class MeasureDefinition implements Serializable {
 	    this.measureDefaultRange = param;
 	}
 
+	@Override
+	public String toString(){
+		return "Measure( id:" + this.idMeasureDef +"\tname: " + this.measureName + "\ttype: " + this.measureType + ")";
+	}
+	
 	// database operations
 	public static MeasureDefinition getMeasureDefinitionById(int personId) {
 		EntityManager em = LifeCoachDao.instance.createEntityManager();
