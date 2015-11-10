@@ -15,11 +15,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
@@ -31,12 +34,20 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * The persistent class for the "HealthMeasureHistory" database table.
  * 
  */
+
 @Entity
 @Table(name="HealthMeasureHistory")
-@NamedQuery(name="HealthMeasureHistory.findAll", query="SELECT h FROM HealthMeasureHistory h")
+@NamedQueries({
+	@NamedQuery(name="HealthMeasureHistory.findAll", query="SELECT h FROM HealthMeasureHistory h"),
+	@NamedQuery(name="HealthMeasureHistory.findMeasureHistoryByMeasureType", query="SELECT h FROM HealthMeasureHistory h, h.measureDefinition m "
+			+ "WHERE h.measureDefinition.idMeasureDef=m.idMeasureDef AND h.person.idPerson=:idPerson AND h.measureDefinition.measureName=:measureType")
+})
+ 
 @XmlType(propOrder={"idMeasureHistory", "value", "timestamp"})
-@XmlRootElement
+@XmlAccessorType(XmlAccessType.NONE)
+@XmlRootElement(name="measureHistory")
 public class HealthMeasureHistory implements Serializable {
+	
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -113,6 +124,13 @@ public class HealthMeasureHistory implements Serializable {
 	    this.person = param;
 	}
 
+	@Override
+	public String toString(){
+		return "MeasureHistory( id:" + this.idMeasureHistory +
+								"\tvalue: " + this.value + 
+								"\tcreated: " + this.timestamp + ")";
+	}
+	
 	// database operations
 	public static HealthMeasureHistory getHealthMeasureHistoryById(int id) {
 		EntityManager em = LifeCoachDao.instance.createEntityManager();
@@ -156,5 +174,17 @@ public class HealthMeasureHistory implements Serializable {
 	    em.remove(p);
 	    tx.commit();
 	    LifeCoachDao.instance.closeConnections(em);
+	}
+	
+	public static List<HealthMeasureHistory> getHealthMeasureHistory(int idPerson, String measureType){
+		EntityManager em = LifeCoachDao.instance.createEntityManager();
+		List<HealthMeasureHistory> measureHistory = em.createNamedQuery("HealthMeasureHistory.findMeasureHistoryByMeasureType", HealthMeasureHistory.class)
+				.setParameter("idPerson", idPerson)
+				.setParameter("measureType", measureType).getResultList();
+		for(HealthMeasureHistory hm : measureHistory){
+			System.out.println(hm.toString());
+		}
+		LifeCoachDao.instance.closeConnections(em);
+		return measureHistory;
 	}
 }
