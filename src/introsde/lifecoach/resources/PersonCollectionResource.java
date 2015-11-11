@@ -50,8 +50,15 @@ public class PersonCollectionResource {
     @GET
     @Produces({MediaType.TEXT_XML,  MediaType.APPLICATION_JSON ,  MediaType.APPLICATION_XML })
     public List<Person> getPersonsBrowser() {
+    	System.out.println("==========================================================================================================================");
+    	System.out.println("\t\t\t\t\tRequest #1 : GET /person");
+    	System.out.println("==========================================================================================================================");
+    	System.out.println();
         System.out.println("Getting list of people...");
         List<Person> people = Person.getAll();
+        for(Person p : people){
+        	System.out.println(p.toString());
+        }
         return people;
     }
 
@@ -86,16 +93,25 @@ public class PersonCollectionResource {
         }
     }
     
-
+    /**
+     * Request #6
+     * @param idPerson
+     * @param measureType
+     * @return the list of values the MeasureHistory of {measureType} for person identified by {idPerson}
+     */
     @GET
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Path("{idPerson}/{measureType}")
-    public List<HealthMeasureHistory> getMeasureHistory(@PathParam("idPerson") int idPerson, @PathParam("measureType") String measureType){
-    	List<HealthMeasureHistory> hm = HealthMeasureHistory.getHealthMeasureHistory(idPerson, measureType);
-    	for(HealthMeasureHistory h : hm){
-    		System.out.println(h.toString());
-    	}
-    	return hm;
+    public List<HealthMeasureHistory> getMeasureHistories(@PathParam("idPerson") int idPerson, 
+    												@PathParam("measureType") String measureType){
+    	System.out.println("==========================================================================================================================");
+    	System.out.println("\t\t\t\t\tRequest #6 : GET /person/"+ idPerson + "/" + measureType);
+    	System.out.println("==========================================================================================================================");
+    	System.out.println();
+    	List<HealthMeasureHistory> measureHistory = HealthMeasureHistory.getMeasureHistoryByMeasureType(idPerson, measureType);
+    	if(measureHistory.isEmpty())
+    		throw new RuntimeException("Get: Person with " + idPerson + " and with " + measureType + " not found");
+    	return measureHistory;
     }
     /*public HealthMeasureHistoryListWrapper getMeasureHistory(@PathParam("idPerson") int idPerson, @PathParam("measureType") String measureType){
     	HealthMeasureHistoryListWrapper hp = new HealthMeasureHistoryListWrapper();
@@ -107,6 +123,29 @@ public class PersonCollectionResource {
     	return hp;
     }*/
     
+    /**
+     * Request #7
+     * @param idPerson
+     * @param measureType
+     * @param mid
+     * @return the value of {measureType} identified by {mid} for person identified by {idPerson} 
+     */
+    @GET
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Path("{idPerson}/{measureType}/{mid}")
+    public HealthMeasureHistory getMeasureHistory(@PathParam("idPerson") int idPerson,
+    											@PathParam("measureType") String measureType,
+    											@PathParam("mid") int mid){
+    	System.out.println("==========================================================================================================================");
+    	System.out.println("\t\t\t\t\tRequest #7 : GET /person/"+ idPerson + "/" + measureType + "/" + mid);
+    	System.out.println("==========================================================================================================================");
+    	System.out.println();
+    	HealthMeasureHistory measureHistory = HealthMeasureHistory.getMeasureHistoryByMid(idPerson, measureType, mid);
+    	if(measureHistory == null)
+    		throw new RuntimeException("Get: Person with " + idPerson + " with " + measureType + " with " + mid + " not found");
+    	return measureHistory;
+    }
+    
     // Defines that the next path parameter after the base url is
     // treated as a parameter and passed to the PersonResources
     // Allows to type http://localhost:599/base_url/1
@@ -116,8 +155,13 @@ public class PersonCollectionResource {
      * @param id
      * @return  all the personal information plus current measures of person identified by {id}
      */
-    @Path("{personId}")
+	@Path("{personId}")
     public PersonResource getPerson(@PathParam("personId") int id) {
+    	System.out.println("==========================================================================================================================");
+    	System.out.println("\t\t\t\t\tRequest #2 : GET /person/"+ id);
+    	System.out.println("==========================================================================================================================");
+    	System.out.println();
+    	System.out.println("Get: Person with " + id + " found");
         return new PersonResource(uriInfo, request, id);
     }
     
