@@ -10,19 +10,19 @@ In this **[assignment](https://sites.google.com/a/unitn.it/introsde_2015-16/lab-
 
 
 ## Project Structure
-* **introsde.lifecoach -** 
-* **introsde.lifecoach.dao -** will contain classes whose purpose will be to provide the underlying connection to the database
-* **introsde.lifecoach.model -** will include classes that represent my domain data model and map the content in my database to objects that can be manipulated in Java
-* **introsde.lifecoach.resources -** will include the resources that are exposed throught the RESTful API, which can be seen as the controllers that receive requests and respond with a representation of the resources that are requested
-* **introsde.lifecoach.wrapper -**
-* **persistence.xml -** is a file presents into folder named META-INF  
-* **build.xml -** is an ant script which automates repetitive tasks directly from the command line.
-* **ivy.xml -** is a file which can specify the dependencies 
-* **lifecoach.sqlite -** is the database that presents an evolved data model
+* **[introsde.lifecoach](https://github.com/yuly-sanchez/introsde-2015-assignment-2/tree/master/src/introsde/lifecoach) -** 
+* **[introsde.lifecoach.dao](https://github.com/yuly-sanchez/introsde-2015-assignment-2/tree/master/src/introsde/lifecoach/dao) -** will contain classes whose purpose will be to provide the underlying connection to the database
+* **[introsde.lifecoach.model](https://github.com/yuly-sanchez/introsde-2015-assignment-2/tree/master/src/introsde/lifecoach/model) -** will include classes that represent my domain data model and map the content in my database to objects that can be manipulated in Java
+* **[introsde.lifecoach.resources](https://github.com/yuly-sanchez/introsde-2015-assignment-2/tree/master/src/introsde/lifecoach/resources) -** will include the resources that are exposed throught the RESTful API, which can be seen as the controllers that receive requests and respond with a representation of the resources that are requested
+* **[introsde.lifecoach.wrapper](https://github.com/yuly-sanchez/introsde-2015-assignment-2/tree/master/src/introsde/lifecoach/wrapper) -**
+* **[persistence.xml](https://github.com/yuly-sanchez/introsde-2015-assignment-2/tree/master/WebContent/META-INF) -** is a file presents into folder named META-INF  
+* **[build.xml](https://github.com/yuly-sanchez/introsde-2015-assignment-2) -** is an ant script which automates repetitive tasks directly from the command line.
+* **[ivy.xml](https://github.com/yuly-sanchez/introsde-2015-assignment-2) -** is a file which can specify the dependencies 
+* **[lifecoach.sqlite](https://github.com/yuly-sanchez/introsde-2015-assignment-2) -** is the database that presents an evolved data model
 
 
 ## Services through a RESTful API
-* **Request #1 :** [GET/person]() should list all the people in my database
+* **Request #1 :** ``[GET/person](#gET/person) should list all the people in my database
 * **Request #2 :** [GET/person/{id}]() should give all the personal information plus current measures of person identified by {id}
 * **Request #3 :** [PUT/person/{id}]() should updated the personal information of the person identified by {id}
 * **Request #4 :** [POST/person]() should create a new person and return the newly created person with its assigned id
@@ -76,7 +76,13 @@ In this **[assignment](https://sites.google.com/a/unitn.it/introsde_2015-16/lab-
     </person>
 </people>
 ```
+## License
 
+Open source templates are Copyright (c) 2015 thoughtbot, inc.
+It contains free software that may be redistributed
+under the terms specified in the [LICENSE] file.
+
+[LICENSE]: /LICENSE
 
 
 
