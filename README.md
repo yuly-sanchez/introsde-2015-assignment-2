@@ -22,7 +22,7 @@ In this **[assignment](https://sites.google.com/a/unitn.it/introsde_2015-16/lab-
 
 
 ## Services through a RESTful API
-* **Request #1 :** [GET/person](#get/person) should list all the people in my database
+* **Request #1 :** [GET/person](#header-get/person) should list all the people in my database
 * **Request #2 :** ``[GET/person/{id}]() should give all the personal information plus current measures of person identified by {id}
 * **Request #3 :** [PUT/person/{id}]() should updated the personal information of the person identified by {id}
 * **Request #4 :** [POST/person]() should create a new person and return the newly created person with its assigned id
