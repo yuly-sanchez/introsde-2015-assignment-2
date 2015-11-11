@@ -35,7 +35,7 @@ In this **[assignment](https://sites.google.com/a/unitn.it/introsde_2015-16/lab-
 * **Request #11 :** [GET/person/{id}/{measureType}?before={beforeDate}&after={afterDate}]() should return the history of {measureType} for person {id} in the specified range of date
 * **Request #12 :** [GET /person?measureType={measureType}&max={max}&min={min}]() should retrieves people whose {measureType} value is in the [{min},{max}] range
 
-### Get
+### GET/person
 ```xml
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <people>
