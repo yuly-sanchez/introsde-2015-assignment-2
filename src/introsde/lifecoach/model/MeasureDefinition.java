@@ -4,6 +4,7 @@ import introsde.lifecoach.dao.LifeCoachDao;
 import introsde.lifecoach.model.MeasureDefaultRange;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.*;
@@ -22,7 +23,11 @@ import com.fasterxml.jackson.annotation.JsonValue;
  */
 @Entity
 @Table(name="MeasureDefinition")
-@NamedQuery(name="MeasureDefinition.findAll", query="SELECT m FROM MeasureDefinition m")
+@NamedQueries({
+	@NamedQuery(name="MeasureDefinition.findAll", query="SELECT m FROM MeasureDefinition m"),
+	@NamedQuery(name="MeasureDefinition.findMeasureName", query="SELECT m.measureName FROM MeasureDefinition m")
+})
+
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement(name="measure")
 public class MeasureDefinition implements Serializable {
@@ -131,5 +136,21 @@ public class MeasureDefinition implements Serializable {
 	    em.remove(p);
 	    tx.commit();
 	    LifeCoachDao.instance.closeConnections(em);
+	}
+	
+	public static List<String> getMeasureTypes(){
+		EntityManager em = LifeCoachDao.instance.createEntityManager();
+		
+		List <String> measureTypes = new ArrayList<String>();
+		List <MeasureDefinition> measureDefTypes = null;
+		try{
+			measureDefTypes = em.createNamedQuery("MeasureDefinition.findAll", MeasureDefinition.class).getResultList();
+			for(MeasureDefinition measureDef : measureDefTypes){
+				measureTypes.add(measureDef.getMeasureName());
+			}
+		}catch(Exception ex){
+			System.out.println();
+		}
+		return measureTypes;
 	}
 }
