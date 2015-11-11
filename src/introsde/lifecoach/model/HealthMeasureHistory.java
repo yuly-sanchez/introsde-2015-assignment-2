@@ -24,6 +24,7 @@ import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
@@ -36,20 +37,22 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 
 @Entity
-@Table(name="HealthMeasureHistory")
+@Table(name="HealthMeasureHistory" )
 @NamedQueries({
 	@NamedQuery(name="HealthMeasureHistory.findAll", query="SELECT h FROM HealthMeasureHistory h"),
 	@NamedQuery(name="HealthMeasureHistory.findMeasureHistoryByMeasureType", query="SELECT h FROM HealthMeasureHistory h, h.measureDefinition m "
-			+ "WHERE h.measureDefinition.idMeasureDef=m.idMeasureDef AND h.person.idPerson=:idPerson AND h.measureDefinition.measureName=:measureType")
+			+ "WHERE h.measureDefinition.idMeasureDef=m.idMeasureDef AND h.person.idPerson=:idPerson AND h.measureDefinition.measureName=:measureType"),
+	@NamedQuery(name="HealthMeasureHistory.findMeasureHistoryByMid", query="SELECT h FROM HealthMeasureHistory h, h.measureDefinition m "
+			+ "WHERE h.measureDefinition.idMeasureDef=m.idMeasureDef AND h.person.idPerson=:idPerson AND h.measureDefinition.measureName=:measureType AND h.idMeasureHistory=:mid")		
 })
  
 @XmlType(propOrder={"idMeasureHistory", "value", "timestamp"})
 @XmlAccessorType(XmlAccessType.NONE)
-@XmlRootElement(name="measureHistory")
+@XmlRootElement(name="measure")
 public class HealthMeasureHistory implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
-
+	
 	@Id
 	@GeneratedValue(generator="sqlite_mhistory")
 	@TableGenerator(name="sqlite_mhistory", table="sqlite_sequence",
@@ -176,14 +179,24 @@ public class HealthMeasureHistory implements Serializable {
 	    LifeCoachDao.instance.closeConnections(em);
 	}
 	
-	public static List<HealthMeasureHistory> getHealthMeasureHistory(int idPerson, String measureType){
+	public static List<HealthMeasureHistory> getMeasureHistoryByMeasureType(int idPerson, String measureType){
 		EntityManager em = LifeCoachDao.instance.createEntityManager();
-		List<HealthMeasureHistory> measureHistory = em.createNamedQuery("HealthMeasureHistory.findMeasureHistoryByMeasureType", HealthMeasureHistory.class)
+		List<HealthMeasureHistory> measureHistories = em.createNamedQuery("HealthMeasureHistory.findMeasureHistoryByMeasureType", HealthMeasureHistory.class)
 				.setParameter("idPerson", idPerson)
 				.setParameter("measureType", measureType).getResultList();
-		for(HealthMeasureHistory hm : measureHistory){
+		for(HealthMeasureHistory hm : measureHistories){
 			System.out.println(hm.toString());
 		}
+		LifeCoachDao.instance.closeConnections(em);
+		return measureHistories;
+	}
+	
+	public static HealthMeasureHistory getMeasureHistoryByMid(int idPerson, String measureType, int mid){
+		EntityManager em = LifeCoachDao.instance.createEntityManager();
+		HealthMeasureHistory measureHistory = em.createNamedQuery("HealthMeasureHistory.findMeasureHistoryByMid", HealthMeasureHistory.class)
+				.setParameter("idPerson", idPerson)
+				.setParameter("measureType", measureType)
+				.setParameter("mid", mid).getSingleResult();
 		LifeCoachDao.instance.closeConnections(em);
 		return measureHistory;
 	}
