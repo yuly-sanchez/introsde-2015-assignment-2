@@ -1,6 +1,5 @@
 package introsde.lifecoach.resources;
 
-import java.util.List;
 
 import introsde.lifecoach.model.*;
 
@@ -18,22 +17,19 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-@Stateless
-// only used if the the application is deployed in a Java EE container
-@LocalBean
-// only used if the the application is deployed in a Java EE container
+@Stateless // only used if the the application is deployed in a Java EE container
+@LocalBean // only used if the the application is deployed in a Java EE container
 public class PersonResource {
+	
 	@Context
 	UriInfo uriInfo;
 	@Context
 	Request request;
 	int id;
 
-	EntityManager entityManager; // only used if the application is deployed in
-									// a Java EE container
+	EntityManager entityManager; // only used if the application is deployed in a Java EE container
 
-	public PersonResource(UriInfo uriInfo, Request request, int id,
-			EntityManager em) {
+	public PersonResource(UriInfo uriInfo, Request request, int id, EntityManager em) {
 		this.uriInfo = uriInfo;
 		this.request = request;
 		this.id = id;
@@ -75,17 +71,21 @@ public class PersonResource {
 	@PUT
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	public Response putPerson(Person person) {
-		System.out.println("--> Updating Person... " + this.id);
-		System.out.println("--> " + person.toString());
-		// Person.updatePerson(person);
-		Response res;
-		Person existing = getPersonById(this.id);
+		
+		System.out.println("==========================================================================================================================");
+    	System.out.println("\t\t\t\t\tRequest #3 : PUT /person/"+ this.id);
+    	System.out.println("==========================================================================================================================");
+    	System.out.println();
+        System.out.println("Updating Person... " + this.id);
+		
+        Response res;
+		Person existing = this.getPersonById(this.id);
 		
 		if (existing == null) {
-			System.out.println("--> Person don't exist and will don't updated");
+			System.out.println("Update: Person with " + this.id + " not found");
 			res = Response.noContent().build();
 		} else {
-			System.out.println("--> Person exist and will do updated");
+			System.out.println("Update: Person with " + this.id + " found");
 			res = Response.created(uriInfo.getAbsolutePath()).build();
 			
 			person.setIdPerson(this.id);
@@ -97,7 +97,6 @@ public class PersonResource {
 			}
 			if(person.getBirthdate() == null){
 				person.setBirthdate(existing.getBirthdate());
-				System.out.println("Birthdate: " + existing.getBirthdate());
 			}
 			person.setLifeStatus(existing.getLifeStatus());
 			Person.updatePerson(person);	
@@ -105,25 +104,26 @@ public class PersonResource {
 		return res;
 	}
 
+	
 	/**
 	 * DELETE/person/{id}
 	 * delete the person identified by {id} from the database
 	 */
 	@DELETE
 	public void deletePerson() {
-		Person person = getPersonById(id);
+		System.out.println("==========================================================================================================================");
+    	System.out.println("\t\t\t\t\tRequest #4 : DELETE /person/"+ this.id);
+    	System.out.println("==========================================================================================================================");
+    	System.out.println();
+		Person person = this.getPersonById(this.id);
 		if (person == null)
-			throw new RuntimeException("Delete: Person with " + id + " not found");
+			throw new RuntimeException("Delete: Person with " + this.id + " not found");
+		System.out.println("Delete: Person with " + this.id + " found");
 		Person.removePerson(person);
 	}
 
 	public Person getPersonById(int personId) {
 		System.out.println("Reading person from DB with id: " + personId);
-
-		// this will work within a Java EE container, where not DAO will be
-		// needed
-		// Person person = entityManager.find(Person.class, personId);
-
 		Person person = Person.getPersonById(personId);
 		System.out.println("Person: " + person.toString());
 		return person;
