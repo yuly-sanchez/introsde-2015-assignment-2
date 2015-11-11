@@ -22,18 +22,18 @@ In this **[assignment](https://sites.google.com/a/unitn.it/introsde_2015-16/lab-
 
 
 ## Services through a RESTful API
-* **Request #1 :** [GET/person]() should list all the people in my database
-* **Request #2 :** ``[GET/person/{id}]() should give all the personal information plus current measures of person identified by {id}
-* **Request #3 :** [PUT/person/{id}]() should updated the personal information of the person identified by {id}
-* **Request #4 :** [POST/person]() should create a new person and return the newly created person with its assigned id
-* **Request #5 :** [DELETE/person/{id}]() should delete the person identified by {id}
-* **Request #6 :** [GET/person/{id}/{measureType}]() should return the list of values the MeasureHistory of {measureType} for person identified by {id}
-* **Request #7 :** [GET/person/{id}/{measureType}]() should return the value of {measureType} identified by {mid} for person identified by {id}
-* **Request #8 :** [POST/person/{id}/{measureType}]() should save a new value for the {measureType} of person identified by {id} and archive the old value in the measureHistory
-* **Request #9 :** [GET/measureType]() should return the list of measures
-* **Request #10 :** [PUT/person/{id}/{measureType}/{mid}]() should update the value for the {measureType} identified by {mid}, related to the person identified by {id}
-* **Request #11 :** [GET/person/{id}/{measureType}?before={beforeDate}&after={afterDate}]() should return the history of {measureType} for person {id} in the specified range of date
-* **Request #12 :** [GET /person?measureType={measureType}&max={max}&min={min}]() should retrieves people whose {measureType} value is in the [{min},{max}] range
+* **Request #1 :** `[GET/person]()` should list all the people in my database
+* **Request #2 :** `[GET/person/{id}]()` should give all the personal information plus current measures of person identified by {id}
+* **Request #3 :** `[PUT/person/{id}]()` should updated the personal information of the person identified by {id}
+* **Request #4 :** `[POST/person]()` should create a new person and return the newly created person with its assigned id
+* **Request #5 :** `[DELETE/person/{id}]()` should delete the person identified by {id}
+* **Request #6 :** `[GET/person/{id}/{measureType}]()` should return the list of values the MeasureHistory of {measureType} for person identified by {id}
+* **Request #7 :** `[GET/person/{id}/{measureType}]()` should return the value of {measureType} identified by {mid} for person identified by {id}
+* **Request #8 :** `[POST/person/{id}/{measureType}]()` should save a new value for the {measureType} of person identified by {id} and archive the old value in the measureHistory
+* **Request #9 :** `[GET/measureType]()` should return the list of measures
+* **Request #10 :** `[PUT/person/{id}/{measureType}/{mid}]()` should update the value for the {measureType} identified by {mid}, related to the person identified by {id}
+* **Request #11 :** `[GET/person/{id}/{measureType}?before={beforeDate}&after={afterDate}]()` should return the history of {measureType} for person {id} in the specified range of date
+* **Request #12 :** `[GET /person?measureType={measureType}&max={max}&min={min}]()` should retrieves people whose {measureType} value is in the [{min},{max}] range
 
 ### GET/person
 ```xml
