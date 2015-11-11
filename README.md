@@ -22,7 +22,7 @@ In this **[assignment](https://sites.google.com/a/unitn.it/introsde_2015-16/lab-
 
 
 ## Services through a RESTful API
-* **Request #1 :** [GET/person](#post) should list all the people in my database
+* **Request #1 :** [GET/person]() should list all the people in my database
 * **Request #2 :** ``[GET/person/{id}]() should give all the personal information plus current measures of person identified by {id}
 * **Request #3 :** [PUT/person/{id}]() should updated the personal information of the person identified by {id}
 * **Request #4 :** [POST/person]() should create a new person and return the newly created person with its assigned id
@@ -76,47 +76,7 @@ In this **[assignment](https://sites.google.com/a/unitn.it/introsde_2015-16/lab-
     </person>
 </people>
 ```
-### Post
-```xml
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<people>
-    <person>
-        <id>1</id>
-        <firstname>Chan</firstname>
-        <lastname>Jecky</lastname>
-        <birthdate>1978-09-02T00:00:00+02:00</birthdate>
-        <healthProfile>
-            <measureType>
-                <measure>weight</measure>
-                <value>72.3</value>
-            </measureType>
-            <measureType>
-                <measure>weight</measure>
-                <value>86</value>
-            </measureType>
-        </healthProfile>
-    </person>
-    <person>
-        <id>2</id>
-        <firstname>Andrea</firstname>
-        <lastname>Bonte</lastname>
-        <birthdate>1978-09-02T00:00:00+02:00</birthdate>
-        <healthProfile>
-            <measureType>
-                <measure>weight</measure>
-                <value>85</value>
-            </measureType>
-        </healthProfile>
-    </person>
-    <person>
-        <id>3</id>
-        <firstname>Pallino</firstname>
-        <lastname>Pinco</lastname>
-        <birthdate>1978-09-02T00:00:00+02:00</birthdate>
-        <healthProfile/>
-    </person>
-</people>
-```
+
 
 ## License
 
