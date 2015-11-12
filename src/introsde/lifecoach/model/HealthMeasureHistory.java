@@ -1,5 +1,7 @@
 package introsde.lifecoach.model;
 
+import introsde.lifecoach.adapter.DateAdapter;
+import introsde.lifecoach.converter.DatePersistenceConverter;
 import introsde.lifecoach.dao.LifeCoachDao;
 import introsde.lifecoach.model.Person;
 
@@ -8,6 +10,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
@@ -24,9 +27,9 @@ import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -40,11 +43,22 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @Table(name="HealthMeasureHistory" )
 @NamedQueries({
 	@NamedQuery(name="HealthMeasureHistory.findAll", query="SELECT h FROM HealthMeasureHistory h"),
-	@NamedQuery(name="HealthMeasureHistory.findMeasureHistoryByMeasureType", query="SELECT h FROM HealthMeasureHistory h, h.measureDefinition m "
-			+ "WHERE h.measureDefinition.idMeasureDef=m.idMeasureDef AND h.person.idPerson=:idPerson AND h.measureDefinition.measureName=:measureType"),
-	@NamedQuery(name="HealthMeasureHistory.findMeasureHistoryByMid", query="SELECT h FROM HealthMeasureHistory h, h.measureDefinition m "
-			+ "WHERE h.measureDefinition.idMeasureDef=m.idMeasureDef AND h.person.idPerson=:idPerson AND h.measureDefinition.measureName=:measureType AND h.idMeasureHistory=:mid")		
-})
+	
+	@NamedQuery(name="HealthMeasureHistory.findMeasureHistoryByMeasureType", 
+				query="SELECT h FROM HealthMeasureHistory h, h.measureDefinition m "
+						+ "WHERE h.measureDefinition.idMeasureDef=m.idMeasureDef AND h.person.idPerson=:idPerson AND h.measureDefinition.measureName=:measureType"),
+	
+	@NamedQuery(name="HealthMeasureHistory.findMeasureHistoryByMid", 
+				query="SELECT h FROM HealthMeasureHistory h, h.measureDefinition m "
+						+ "WHERE h.measureDefinition.idMeasureDef=m.idMeasureDef AND h.person.idPerson=:idPerson AND h.measureDefinition.measureName=:measureType AND h.idMeasureHistory=:mid"),
+			//select * from HealthMeasureHistory hm where hm.idPerson="1" and hm.idMeasureDef="1" and strftime('%Y-%m-%d %H:%M:%S', hm.timestamp) between '2013-09-22 22:00:00' and '2015-11-11 10:00:00';
+			//select * from HealthMeasureHistory hm where hm.idPerson="1" and hm.idMeasureDef="1" and hm.timestamp between '2013-08-22' and '2015-12-23';			
+			//query="SELECT hm FROM HealthMeasureHistory hm, hm.measure m " + 
+			//  "WHERE  hm.measure.idMeasure=m.idMeasure AND hm.person.idPerson=:idPerson AND hm.measure.name=:nameMeasure AND hm.timestamp>=:beforeDate AND hm.timestamp<=:afterDate"
+	@NamedQuery(name="HealthMeasureHistory.findMeasureHistoryInTheDateOfRange", 
+				query="SELECT h FROM HealthMeasureHistory h, h.measureDefinition m"
+						+ "WHERE h.measureDefinition.idMeasureDef=m.idMeasureDef AND h.person.idPerson=:idPerson AND h.measureDefinition.measureName=:measureType AND strftime('%Y-%m-%d %H:%M:%S', h.timestamp) BETWEEN beforeDate AND afterDate")		
+	})
  
 @XmlType(propOrder={"idMeasureHistory", "value", "timestamp"})
 @XmlAccessorType(XmlAccessType.NONE)
@@ -65,6 +79,7 @@ public class HealthMeasureHistory implements Serializable {
 
 	@Temporal(TemporalType.DATE)
 	@Column(name="timestamp")
+	@XmlJavaTypeAdapter(DateAdapter.class)
 	@XmlElement(name="created")
 	@JsonProperty("created")
 	private Date timestamp;
