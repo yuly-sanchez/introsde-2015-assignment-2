@@ -64,7 +64,7 @@ public class PersonResource {
 	}
 
 	/**
-	 * Request #3 PUT/person/{id}
+	 * Request #3: PUT/person/{id}
 	 * @param person
 	 * @return the personal information of the person identified by id updated
 	 */
@@ -98,6 +98,7 @@ public class PersonResource {
 			if(person.getBirthdate() == null){
 				person.setBirthdate(existing.getBirthdate());
 			}
+			
 			person.setLifeStatus(existing.getLifeStatus());
 			Person.updatePerson(person);	
 		}
@@ -106,7 +107,7 @@ public class PersonResource {
 
 	
 	/**
-	 * DELETE/person/{id}
+	 * Request #5: DELETE/person/{id}
 	 * delete the person identified by {id} from the database
 	 */
 	@DELETE
