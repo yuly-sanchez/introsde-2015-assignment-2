@@ -1,5 +1,7 @@
 package introsde.lifecoach.model;
 
+import introsde.lifecoach.adapter.DateAdapter;
+import introsde.lifecoach.converter.DatePersistenceConverter;
 import introsde.lifecoach.dao.LifeCoachDao;
 
 import java.io.Serializable;
@@ -12,6 +14,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
