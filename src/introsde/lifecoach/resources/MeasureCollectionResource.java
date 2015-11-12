@@ -26,8 +26,7 @@ public class MeasureCollectionResource {
 	Request request;
 	
 	/**
-	 * Request #9: 
-	 * GET /measureTypes 
+	 * Request #9: GET /measureTypes 
 	 * return the list of measures type
 	 */
 	@GET
