@@ -11,6 +11,7 @@ import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlValue;
 
 import com.fasterxml.jackson.annotation.JsonValue;
@@ -24,8 +25,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 @Entity
 @Table(name="MeasureDefinition")
 @NamedQueries({
-	@NamedQuery(name="MeasureDefinition.findAll", query="SELECT m FROM MeasureDefinition m"),
-	@NamedQuery(name="MeasureDefinition.findMeasureName", query="SELECT m.measureName FROM MeasureDefinition m")
+	@NamedQuery(name="MeasureDefinition.findAll", query="SELECT m FROM MeasureDefinition m")
 })
 
 @XmlAccessorType(XmlAccessType.NONE)
@@ -90,7 +90,10 @@ public class MeasureDefinition implements Serializable {
 
 	@Override
 	public String toString(){
-		return "Measure( id:" + this.idMeasureDef +"\tname: " + this.measureName + "\ttype: " + this.measureType + ")";
+		return "Measure [ id: " + this.idMeasureDef +
+						  "\tmeasureName: " + this.measureName + 
+						  "\tmeasureType: " + this.measureType + 
+						  " ]";
 	}
 	
 	// database operations
