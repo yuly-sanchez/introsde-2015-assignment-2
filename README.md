@@ -27,13 +27,13 @@ In this **[assignment](https://sites.google.com/a/unitn.it/introsde_2015-16/lab-
 * **Request #3 :** [PUT/person/{id}](#put-personid)
 * **Request #4 :** [POST/person](#post-person)
 * **Request #5 :** [DELETE/person/{id}](#delete-personid) 
-* **Request #6 :** [GET/person/{id}/{measureType}](#get-personidmeasureType)
-* **Request #7 :** [GET/person/{id}/{measureType}/{mid}](#get-personidmeasureTypemid)
-* **Request #8 :** [POST/person/{id}/{measureType}](#post-personidmeasureType)
-* **Request #9 :** [GET/measureTypes](#get-measureTypes)
-* **Request #10 :** [PUT/person/{id}/{measureType}/{mid}](#put-personidmeasureTypemid)
-* **Request #11 :** [GET/person/{id}/{measureType}?before={beforeDate}&after={afterDate}](#get-personidmeasureTypebeforebeforeDateafterafterDate)
-* **Request #12 :** [GET /person?measureType={measureType}&max={max}&min={min}](#get-personmeasureTypemeasureTypemaxmaxminmin)
+* **Request #6 :** [GET/person/{id}/{measureType}](#get-personidmeasuretype)
+* **Request #7 :** [GET/person/{id}/{measureType}/{mid}](#get-personidmeasuretypemid)
+* **Request #8 :** [POST/person/{id}/{measureType}](#post-personidmeasuretype)
+* **Request #9 :** [GET/measureTypes](#get-measuretypes)
+* **Request #10 :** [PUT/person/{id}/{measureType}/{mid}](#put-personidmeasuretypemid)
+* **Request #11 :** [GET/person/{id}/{measureType}?before={beforeDate}&after={afterDate}](#get-personidmeasuretypebeforebeforedateafterafterdate)
+* **Request #12 :** [GET /person?measureType={measureType}&max={max}&min={min}](#get-personmeasuretypemeasuretypemaxmaxminmin)
 
 #### GET /person
 ```xml
