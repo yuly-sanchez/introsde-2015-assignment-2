@@ -19,6 +19,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
@@ -49,18 +50,41 @@ public class PersonCollectionResource {
 	 * Request #1: GET/person
 	 * @return list all person into DB
 	 */
+	/**
+	 * Request #12: GET/person?measureType={measureType}&max={max}&min={min}
+	 * @return list all person into DB
+	 */
 	@GET
-	@Produces({ MediaType.TEXT_XML, MediaType.APPLICATION_JSON,
-			MediaType.APPLICATION_XML })
-	public List<Person> getPersonsBrowser() {
-		System.out.println("==========================================================================================================================");
-		System.out.println("\t\t\t\t\tRequest #1 : GET /person");
-		System.out.println("==========================================================================================================================");
-		System.out.println();
-		System.out.println("Getting list of people...");
-		List<Person> people = Person.getAll();
-		for (Person p : people) {
-			System.out.println(p.toString());
+	@Produces({ MediaType.TEXT_XML, MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	public List<Person> getPeople(@QueryParam("measureType") String measureType, 
+			 					  @QueryParam("max") String max, 
+			 					  @QueryParam("min") String min) {
+		
+		System.out.println("MeasureType: " + measureType);
+		System.out.println("Max: " + max);
+		System.out.println("Min: " + min);
+		
+		List<Person> people = null;
+		try{
+			
+			if(measureType==null && max==null && min==null){
+				System.out.println("--> REQUESTED: Getting list of people...");
+				System.out.println();
+				people = Person.getAll();
+				for (Person p : people) {
+					System.out.println(p.toString());
+				}
+			}else{
+				System.out.println("--> REQUESTED: getPeople("+measureType+", "+min+", "+max+")");
+				System.out.println();
+				System.out.println("Getting list of people...");
+				people = Person.getFilteredPersonByMeasure(measureType, min, max);
+				for (Person p : people) {
+					System.out.println(p.toString());
+				}
+			}
+		}catch(Exception ex){
+			ex.printStackTrace();
 		}
 		return people;
 	}
@@ -98,71 +122,6 @@ public class PersonCollectionResource {
 		}
 	}
 
-	/**
-	 * Request #6: GET/person/{id}/{measureType}
-	 * @param idPerson
-	 * @param measureType
-	 * @return the list of values the MeasureHistory of {measureType} for person
-	 *         identified by {idPerson}
-	 */
-	@GET
-	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	@Path("{idPerson}/{measureType}")
-	public List<HealthMeasureHistory> getMeasureHistories(
-			@PathParam("idPerson") int idPerson,
-			@PathParam("measureType") String measureType) {
-		System.out.println("==========================================================================================================================");
-		System.out.println("\t\t\t\t\tRequest #6 : GET /person/" + idPerson + "/" + measureType);
-		System.out.println("==========================================================================================================================");
-		System.out.println();
-		List<HealthMeasureHistory> measureHistory = HealthMeasureHistory
-				.getMeasureHistoryByMeasureType(idPerson, measureType);
-		if (measureHistory.isEmpty())
-			throw new RuntimeException("Get: Person with " + idPerson
-					+ " and with " + measureType + " not found");
-		return measureHistory;
-	}
-
-	/*
-	 * public HealthMeasureHistoryListWrapper
-	 * getMeasureHistory(@PathParam("idPerson") int idPerson,
-	 * 
-	 * @PathParam("measureType") String measureType){
-	 * HealthMeasureHistoryListWrapper hp = new
-	 * HealthMeasureHistoryListWrapper();
-	 * System.out.println("Getting MeasureHistory to " + idPerson +
-	 * " measureType " + measureType);
-	 * hp.setListMeasure(HealthMeasureHistory.getHealthMeasureHistory(idPerson,
-	 * measureType)); for(HealthMeasureHistory h : hp.getListMeasure()){
-	 * System.out.println(h.toString()); } return hp; }
-	 */
-
-	/**
-	 * Request #7: GET/person/{id}/{measureType}/{mid}
-	 * @param idPerson
-	 * @param measureType
-	 * @param mid
-	 * @return the value of {measureType} identified by {mid} for person identified by {idPerson}
-	 */
-	@GET
-	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	@Path("{idPerson}/{measureType}/{mid}")
-	public HealthMeasureHistory getMeasureHistory(
-			@PathParam("idPerson") int idPerson,
-			@PathParam("measureType") String measureType,
-			@PathParam("mid") int mid) {
-		System.out.println("==========================================================================================================================");
-		System.out.println("\t\t\t\t\tRequest #7 : GET /person/" + idPerson + "/" + measureType + "/" + mid);
-		System.out.println("==========================================================================================================================");
-		System.out.println();
-		HealthMeasureHistory measureHistory = HealthMeasureHistory
-				.getMeasureHistoryByMid(idPerson, measureType, mid);
-		if (measureHistory == null)
-			throw new RuntimeException("Get: Person with " + idPerson
-					+ " with " + measureType + " with " + mid + " not found");
-		return measureHistory;
-	}
-
 	// Defines that the next path parameter after the base url is
 	// treated as a parameter and passed to the PersonResources
 	// Allows to type http://localhost:599/base_url/1
@@ -182,66 +141,4 @@ public class PersonCollectionResource {
 		return new PersonResource(uriInfo, request, id);
 	}
 
-	/**
-	 * Request #10: PUT/person/{id}/{measureType}/{id}
-	 * @param idPerson
-	 * @param measureType
-	 * @param mid
-	 * @param measureHistory
-	 * @return
-	 * @throws Exception
-	 */
-	@PUT
-	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	@Path("{idPerson}/{measureType}/{mid}")
-	public Response putMeasureType(@PathParam("idPerson") int idPerson,
-			@PathParam("measureType") String measureType,
-			@PathParam("mid") int mid, HealthMeasureHistory measureHistory)
-			throws Exception {
-		System.out.println("==========================================================================================================================");
-		System.out.println("\t\t\t\t\tRequest #10 : PUT /person/" + idPerson + "/" + measureType + "/" + mid);
-		System.out.println("==========================================================================================================================");
-		System.out.println();
-
-		Calendar calendar = Calendar.getInstance();
-
-		Response res;
-		HealthMeasureHistory existing = HealthMeasureHistory
-				.getHealthMeasureHistoryById(mid);
-
-		if (existing == null) {
-			System.out.println("Update: MeasureType with " + mid + " not found");
-			res = Response.noContent().build();
-
-		} else {
-			System.out.println("Update: MeasureType with " + mid + " found");
-			res = Response.created(uriInfo.getAbsolutePath()).build();
-
-			measureHistory.setIdMeasureHistory(mid);
-			measureHistory.setPerson(existing.getPerson());
-			measureHistory
-					.setMeasureDefinition(existing.getMeasureDefinition());
-			if (measureHistory.getValue() == null) {
-				measureHistory.setValue(existing.getValue());
-			}
-			measureHistory.setTimestamp(calendar.getTime()); //CONVERTER DATE TO DATABASECOLUMN 
-			HealthMeasureHistory.updateHealthMeasureHistory(measureHistory);
-			
-			Person person = Person.getPersonById(idPerson); 
-			List<LifeStatus> lifeStatusList = person.getLifeStatus();
-			System.out.println(lifeStatusList.toString());
-			for(LifeStatus lifeStatus : lifeStatusList){
-				if(lifeStatus.getMeasureDefinition().getIdMeasureDef() == measureHistory.getMeasureDefinition().getIdMeasureDef()){
-					lifeStatus.setIdMeasure(lifeStatus.getIdMeasure());
-					lifeStatus.setMeasureDefinition(lifeStatus.getMeasureDefinition());
-					lifeStatus.setPerson(person);
-					lifeStatus.setValue(measureHistory.getValue());
-					LifeStatus.updateLifeStatus(lifeStatus);
-				}
-				
-			}
-			 
-		}
-		return res;
-	}
 }
