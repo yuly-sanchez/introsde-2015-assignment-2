@@ -22,9 +22,9 @@ In this **[assignment](https://sites.google.com/a/unitn.it/introsde_2015-16/lab-
 
 
 ## Services through a RESTful API
-* **Request #1 :** `[GET/person]()` should list all the people in my database
-* **Request #2 :** `[GET/person/{id}]()` should give all the personal information plus current measures of person identified by {id}
-* **Request #3 :** `[PUT/person/{id}]()` should updated the personal information of the person identified by {id}
+* **Request #1 :** `[GET/person](#get-person)` should list all the people in my database
+* **Request #2 :** `[GET/person/{id}](#get-personid)` should give all the personal information plus current measures of person identified by {id}
+* **Request #3 :** `[PUT/person/{id}](#put-personid)` should updated the personal information of the person identified by {id}
 * **Request #4 :** `[POST/person]()` should create a new person and return the newly created person with its assigned id
 * **Request #5 :** `[DELETE/person/{id}]()` should delete the person identified by {id}
 * **Request #6 :** `[GET/person/{id}/{measureType}]()` should return the list of values the MeasureHistory of {measureType} for person identified by {id}
@@ -35,7 +35,7 @@ In this **[assignment](https://sites.google.com/a/unitn.it/introsde_2015-16/lab-
 * **Request #11 :** `[GET/person/{id}/{measureType}?before={beforeDate}&after={afterDate}]()` should return the history of {measureType} for person {id} in the specified range of date
 * **Request #12 :** `[GET /person?measureType={measureType}&max={max}&min={min}]()` should retrieves people whose {measureType} value is in the [{min},{max}] range
 
-### GET/person
+### GET /person
 ```xml
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <people>
@@ -77,6 +77,17 @@ In this **[assignment](https://sites.google.com/a/unitn.it/introsde_2015-16/lab-
 </people>
 ```
 
+### GET /person/{id}
+### PUT /person/{id}
+### POST /person
+### DELETE /person/{id}
+### GET /person/{id}/{measureType}
+### GET /person/{id}/{measureType}/{mid}
+### POST /person/{id}/{measureType}
+### GET /measureTypes
+### PUT /person/{id}/{measureType}/{mid}
+### GET /person/{id}/{measureType}?before={beforeDate}&after={afterDate}
+### GET /person?measureType={measureType}&max={max}&min={min}
 
 ## License
 
