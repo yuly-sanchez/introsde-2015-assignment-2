@@ -1,7 +1,5 @@
 package introsde.lifecoach.model;
 
-import introsde.lifecoach.adapter.DateAdapter;
-import introsde.lifecoach.converter.DatePersistenceConverter;
 import introsde.lifecoach.dao.LifeCoachDao;
 
 import java.io.Serializable;
@@ -14,13 +12,19 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import javax.xml.bind.annotation.XmlTransient;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity  // indicates that this class is an entity to persist in DB
 @Table(name="Person") // to whole table must be persisted 
-@NamedQuery(name="Person.findAll", query="SELECT p FROM Person p")
+@NamedQueries({
+	@NamedQuery(name="Person.findAll", query="SELECT p FROM Person p"),
+	@NamedQuery(name="Person.findValuesOfRange", 
+				query="SELECT p FROM Person p INNER JOIN p.lifeStatus l WHERE l.measureDefinition = ?1 AND "
+						+ "CAST(l.value NUMERIC(10,2)) BETWEEN ?2 AND ?3")					
+})
+
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement
 public class Person implements Serializable {
@@ -43,7 +47,6 @@ public class Person implements Serializable {
     
     @Column(name="lastname")
     @XmlElement(name="lastname")
-    @JsonProperty("lastname")
     private String lastname;
     
     @Column(name="username")
@@ -52,7 +55,6 @@ public class Person implements Serializable {
     @Temporal(TemporalType.DATE) // defines the precision of the date attribute
     @Column(name="birthdate")
     @XmlElement(name="birthdate")
-    @JsonProperty("birthdate")
     private Date birthdate; 
     
     @Column(name="email")
@@ -115,10 +117,11 @@ public class Person implements Serializable {
     
     @Override
 	public String toString(){
-		return "Person(id:" + this.idPerson +
-					"\tfirstname: " + this.name + 
-					"\tlastname: " + this.lastname + 
-					"\tbirthdate: " + this.birthdate + ")";
+		return 	"Person [ id:" + this.idPerson +
+						  "\tfirstname: " + this.name + 
+						  "\t\tlastname: " + this.lastname + 
+						  "\t\tbirthdate: " + this.birthdate + 
+						  " ]";
 	}
     
     public static Person getPersonById(int personId) {
@@ -166,4 +169,16 @@ public class Person implements Serializable {
         LifeCoachDao.instance.closeConnections(em);
     }
     
+    public static List<Person> getFilteredPersonByMeasure(String measureType, String min, String max){
+    	EntityManager em = LifeCoachDao.instance.createEntityManager();
+    	List<Person> personList = em.createNamedQuery("Person.findValuesOfRange", Person.class)
+    				.setParameter("measureType", measureType)
+    				.setParameter("min", min)
+    				.setParameter("max", max).getResultList();
+    		for(Person p : personList){
+    			System.out.println(p.toString());
+    		}
+    	LifeCoachDao.instance.closeConnections(em);
+    	return personList;
+    }
 }
