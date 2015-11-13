@@ -22,20 +22,20 @@ In this **[assignment](https://sites.google.com/a/unitn.it/introsde_2015-16/lab-
 
 
 ## Services through a RESTful API
-* **Request #1 :** [GET/person](#get-person) should list all the people in my database
-* **Request #2 :** [GET/person/{id}](#get-personid) should give all the personal information plus current measures of person identified by {id}
-* **Request #3 :** [PUT/person/{id}](#put-personid) should updated the personal information of the person identified by {id}
-* **Request #4 :** [POST/person](#post-person) should create a new person and return the newly created person with its assigned id
-* **Request #5 :** [DELETE/person/{id}](#delete-personid) should delete the person identified by {id}
-* **Request #6 :** [GET/person/{id}/{measureType}](#get-personidmeasureType) should return the list of values the MeasureHistory of {measureType} for person identified by {id}
-* **Request #7 :** [GET/person/{id}/{measureType}/{mid}](#get-personidmeasureTypemid) should return the value of {measureType} identified by {mid} for person identified by {id}
-* **Request #8 :** [POST/person/{id}/{measureType}](#post-personidmeasureType) should save a new value for the {measureType} of person identified by {id} and archive the old value in the measureHistory
-* **Request #9 :** [GET/measureTypes](#get-measureTypes) should return the list of measures
-* **Request #10 :** [PUT/person/{id}/{measureType}/{mid}](#put-personidmeasureTypemid) should update the value for the {measureType} identified by {mid}, related to the person identified by {id}
-* **Request #11 :** [GET/person/{id}/{measureType}?before={beforeDate}&after={afterDate}](#get-personidmeasureTypebeforebeforeDateafterafterDate) should return the history of {measureType} for person {id} in the specified range of date
-* **Request #12 :** [GET /person?measureType={measureType}&max={max}&min={min}](#get-personmeasureTypemeasureTypemaxmaxminmin) should retrieves people whose {measureType} value is in the [{min},{max}] range
+* **Request #1 :** [GET/person](#get-person)
+* **Request #2 :** [GET/person/{id}](#get-personid) 
+* **Request #3 :** [PUT/person/{id}](#put-personid)
+* **Request #4 :** [POST/person](#post-person)
+* **Request #5 :** [DELETE/person/{id}](#delete-personid) 
+* **Request #6 :** [GET/person/{id}/{measureType}](#get-personidmeasureType)
+* **Request #7 :** [GET/person/{id}/{measureType}/{mid}](#get-personidmeasureTypemid)
+* **Request #8 :** [POST/person/{id}/{measureType}](#post-personidmeasureType)
+* **Request #9 :** [GET/measureTypes](#get-measureTypes)
+* **Request #10 :** [PUT/person/{id}/{measureType}/{mid}](#put-personidmeasureTypemid)
+* **Request #11 :** [GET/person/{id}/{measureType}?before={beforeDate}&after={afterDate}](#get-personidmeasureTypebeforebeforeDateafterafterDate)
+* **Request #12 :** [GET /person?measureType={measureType}&max={max}&min={min}](#get-personmeasureTypemeasureTypemaxmaxminmin)
 
-#### GET/person
+#### GET /person
 ```xml
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <people>
