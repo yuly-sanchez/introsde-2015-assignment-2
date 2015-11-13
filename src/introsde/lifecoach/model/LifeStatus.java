@@ -102,15 +102,14 @@ public class LifeStatus implements Serializable {
 
 	@Override
 	public String toString(){
-		return "LifeStatus(id:" + this.idMeasure +
-					"\tidMeasureDefinition: " + this.measureDefinition + 
-					"\tidPerson: " + this.person + 
-					"\tvalue: " + this.value;
+		return "LifeStatus [ id:" + this.idMeasure +
+							"\tidMeasureDefinition: " + this.measureDefinition + 
+							"\tidPerson: " + this.person + 
+							"\tvalue: " + this.value + 
+							" ]";
 	}
 	
-	// Database operations
-	// Notice that, for this example, we create and destroy and entityManager on each operation. 
-	// How would you change the DAO to not having to create the entity manager every time? 
+	// Database operations 
 	public static LifeStatus getLifeStatusById(int lifestatusId) {
 		EntityManager em = LifeCoachDao.instance.createEntityManager();
 		LifeStatus p = em.find(LifeStatus.class, lifestatusId);
