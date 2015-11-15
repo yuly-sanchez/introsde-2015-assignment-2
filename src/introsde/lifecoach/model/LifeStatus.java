@@ -102,7 +102,7 @@ public class LifeStatus implements Serializable {
 
 	@Override
 	public String toString(){
-		return "LifeStatus [ id:" + this.idMeasure +
+		return "--> LifeStatus [ id:" + this.idMeasure +
 							"\tidMeasureDefinition: " + this.measureDefinition + 
 							"\tidPerson: " + this.person + 
 							"\tvalue: " + this.value + 
