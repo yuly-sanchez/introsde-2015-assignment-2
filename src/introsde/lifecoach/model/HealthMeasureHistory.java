@@ -43,24 +43,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @Table(name="HealthMeasureHistory" )
 @NamedQueries({
 	
-	@NamedQuery(name="HealthMeasureHistory.findAll", query="SELECT h FROM HealthMeasureHistory h"),
+	@NamedQuery(name="HealthMeasureHistory.findAll", query="SELECT h FROM HealthMeasureHistory h "),
 	
 	@NamedQuery(name="HealthMeasureHistory.findByMeasureType", 
-				query="SELECT h FROM HealthMeasureHistory h, h.measureDefinition m "
-						+ "WHERE h.measureDefinition.idMeasureDef=m.idMeasureDef AND h.person.idPerson= :idPerson AND h.measureDefinition.measureName= :measureType"),
-	
+				query="SELECT h FROM HealthMeasureHistory h "
+						+ "WHERE h.person= ?1 AND h.measureDefinition= ?2"),
 	
 	@NamedQuery(name="HealthMeasureHistory.findByMid", 
-				query="SELECT h FROM HealthMeasureHistory h, h.measureDefinition m "
-						+ "WHERE h.measureDefinition.idMeasureDef=m.idMeasureDef AND h.person.idPerson= :idPerson AND h.measureDefinition.measureName= :measureType AND h.idMeasureHistory= :mid"),
+				query="SELECT h FROM HealthMeasureHistory h "
+						+ "WHERE h.person= ?1 AND h.measureDefinition= ?2 AND h.idMeasureHistory= ?3"),
 	
-	/*@NamedQuery(name="HealthMeasureHistory.findByDateOfRange", 
-				query="SELECT h FROM HealthMeasureHistory h, h.measureDefinition m"
-						+ "WHERE h.measureDefinition.idMeasureDef=m.idMeasureDef AND h.person.idPerson= :idPerson AND h.measureDefinition.measureName= :measureType AND h.timestamp>=:before AND h.timestamp<=:after"),
-	*/
-	/*@NamedQuery(name="HealthMeasureHistory.findByDateOfRange", 
-				query="SELECT h FROM HealthMeasureHistory h"
-						+ "WHERE h.person= ?1 AND h.measureDefinition= ?2 AND h.timestamp BETWEEN ?3 AND ?4")*/					
+	@NamedQuery(name="HealthMeasureHistory.findByDateOfRange", 
+				query="SELECT h FROM HealthMeasureHistory h "
+						+ "WHERE h.person= ?1 AND h.measureDefinition= ?2 AND h.timestamp BETWEEN ?3 AND ?4")					
 	})
  
 @XmlType(propOrder={"idMeasureHistory", "value", "timestamp"})
@@ -198,49 +193,34 @@ public class HealthMeasureHistory implements Serializable {
 	    LifeCoachDao.instance.closeConnections(em);
 	}
 	
-	/*public static List<HealthMeasureHistory> getMeasureHistoryByMeasureType(Person person, MeasureDefinition measureDef){
+	public static List<HealthMeasureHistory> getMeasureHistoryByMeasureType(Person person, MeasureDefinition measureDef){
 		EntityManager em = LifeCoachDao.instance.createEntityManager();
 		List<HealthMeasureHistory> measureHistories = em.createNamedQuery("HealthMeasureHistory.findByMeasureType", HealthMeasureHistory.class)
 				.setParameter(1, person)
 				.setParameter(2, measureDef).getResultList();
-		for(HealthMeasureHistory hm : measureHistories){
-			System.out.println(hm.toString());
-		}
-		LifeCoachDao.instance.closeConnections(em);
-		return measureHistories;
-	}*/
-	
-	public static List<HealthMeasureHistory> getMeasureHistoryByMeasureType(int idPerson, String measureType){
-		EntityManager em = LifeCoachDao.instance.createEntityManager();
-		List<HealthMeasureHistory> measureHistories = em.createNamedQuery("HealthMeasureHistory.findByMeasureType", HealthMeasureHistory.class)
-				.setParameter("idPerson", idPerson)
-				.setParameter("measureType", measureType).getResultList();
-		for(HealthMeasureHistory hm : measureHistories){
-			System.out.println(hm.toString());
-		}
 		LifeCoachDao.instance.closeConnections(em);
 		return measureHistories;
 	}
 	
-	public static HealthMeasureHistory getMeasureHistoryByMid(int idPerson, String measureType, int mid){
+	public static HealthMeasureHistory getMeasureHistoryByMid(Person person, MeasureDefinition measureDef, int mid){
 		EntityManager em = LifeCoachDao.instance.createEntityManager();
 		HealthMeasureHistory measureHistory = em.createNamedQuery("HealthMeasureHistory.findByMid", HealthMeasureHistory.class)
-				.setParameter("idPerson", idPerson)
-				.setParameter("measureType", measureType)
-				.setParameter("mid", mid).getSingleResult();
+				.setParameter(1, person)
+				.setParameter(2, measureDef)
+				.setParameter(3, mid).getSingleResult();
 		LifeCoachDao.instance.closeConnections(em);
 		return measureHistory;
 	}
 	
-	public static List<HealthMeasureHistory> getFilterByDatesHistory(int idPerson, String measureType, Calendar beforeDate, Calendar afterDate){
+	public static List<HealthMeasureHistory> getFilterByDatesHistory(Person person, MeasureDefinition measureDef, Calendar beforeDate, Calendar afterDate){
 		EntityManager em = LifeCoachDao.instance.createEntityManager();
 		List<HealthMeasureHistory> filteredHistory = null;
 		try{
 			filteredHistory = em.createNamedQuery("HealthMeasureHistory.findByDateOfRange", HealthMeasureHistory.class)
-						.setParameter("idPerson", idPerson)
-						.setParameter("measureType", measureType)
-						.setParameter("before", beforeDate.getTime(), TemporalType.DATE)
-						.setParameter("after", afterDate.getTime(), TemporalType.DATE).getResultList();	
+						.setParameter(1, person)
+						.setParameter(2, measureDef)
+						.setParameter(3, beforeDate.getTime(), TemporalType.DATE)
+						.setParameter(4, afterDate.getTime(), TemporalType.DATE).getResultList();	
 		}catch(Exception ex){
 			ex.printStackTrace();
 		}
