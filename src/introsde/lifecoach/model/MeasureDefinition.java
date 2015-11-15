@@ -25,7 +25,8 @@ import com.fasterxml.jackson.annotation.JsonValue;
 @Entity
 @Table(name="MeasureDefinition")
 @NamedQueries({
-	@NamedQuery(name="MeasureDefinition.findAll", query="SELECT m FROM MeasureDefinition m")
+	@NamedQuery(name="MeasureDefinition.findAll", query="SELECT m FROM MeasureDefinition m"),
+	@NamedQuery(name="MeasureDefinition.findIdMeasureDef", query="SELECT m FROM MeasureDefinition m WHERE m.measureName= :measureName")
 })
 
 @XmlAccessorType(XmlAccessType.NONE)
@@ -97,9 +98,9 @@ public class MeasureDefinition implements Serializable {
 	}
 	
 	// database operations
-	public static MeasureDefinition getMeasureDefinitionById(int personId) {
+	public static MeasureDefinition getMeasureDefinitionById(int measureDefId) {
 		EntityManager em = LifeCoachDao.instance.createEntityManager();
-		MeasureDefinition p = em.find(MeasureDefinition.class, personId);
+		MeasureDefinition p = em.find(MeasureDefinition.class, measureDefId);
 		LifeCoachDao.instance.closeConnections(em);
 		return p;
 	}
@@ -155,5 +156,13 @@ public class MeasureDefinition implements Serializable {
 			System.out.println();
 		}
 		return measureTypes;
+	}
+	
+	public static MeasureDefinition getMeasureDefinition(String measureName){
+		EntityManager em = LifeCoachDao.instance.createEntityManager();
+		MeasureDefinition md = em.createNamedQuery("MeasureDefinition.findIdMeasureDef", MeasureDefinition.class)
+							  .setParameter("measureName", measureName).getSingleResult();
+		LifeCoachDao.instance.closeConnections(em);
+		return md;
 	}
 }
