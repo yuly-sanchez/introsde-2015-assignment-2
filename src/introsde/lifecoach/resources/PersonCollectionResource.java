@@ -1,5 +1,6 @@
 package introsde.lifecoach.resources;
 import introsde.lifecoach.model.*;
+import introsde.lifecoach.wrapper.PeopleWrapper;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -24,10 +25,8 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
 
 
-@Stateless
-// will work only inside a Java EE application
-@LocalBean
-// will work only inside a Java EE application
+@Stateless // will work only inside a Java EE application
+@LocalBean // will work only inside a Java EE application
 @Path("/person")
 public class PersonCollectionResource {
 
@@ -49,19 +48,35 @@ public class PersonCollectionResource {
 	/**
 	 * Request #1: GET/person
 	 * @return list all person into DB
-	 * 
 	 * Request #12: GET/person?measureType={measureType}&max={max}&min={min}
 	 * @return list all person into DB
 	 */
 	@GET
 	@Produces({ MediaType.TEXT_PLAIN, MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-	 public List<Person> getPeople() {
-	 System.out.println("--> REQUESTED: Getting list of people...");
-	 System.out.println(); 
-	 List<Person> people = Person.getAll();
-	 return people;
+	 public PeopleWrapper getPeople (@QueryParam("measureType") String measureType,
+			 					   	 @QueryParam("max") Double max,
+			 					     @QueryParam("min") Double min) {
+		
+	 List<Person> people = new ArrayList<Person>(); 
+	 PeopleWrapper peopleWrapper = new PeopleWrapper();
 	 
-	}
+	 if(measureType!=null && (max!=null || min!=null)){ //--->DA CONTROLLARE non entra
+		 min = min==null ? 0. : min ;
+		 max = max==null ? 300. : max;
+		 System.out.println("--> REQUEST: Retrieves people whose " +measureType +" value is in the ["+min+","+max+"] range");
+		 System.out.println();
+		 MeasureDefinition md = MeasureDefinition.getMeasureDefinition(measureType);
+		 people = Person.getFilteredPersonByValuesOfRange(md, min, max);
+		 peopleWrapper.setListPeople(people);
+		 
+	 }else{
+		 System.out.println("--> REQUESTED: Getting list of people...");
+		 System.out.println(); 
+		 people = Person.getAll();
+		 peopleWrapper.setListPeople(people);
+	 }
+	 return peopleWrapper;
+}
 	/*@GET
 	@Produces({ MediaType.TEXT_PLAIN, MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	 public List<Person> getPeople(@QueryParam("measureType") String measureType,
@@ -69,29 +84,19 @@ public class PersonCollectionResource {
 			 					   @QueryParam("min") Double min) {
 		
 	 List<Person> people = null; 
-	 MeasureDefinition md = MeasureDefinition.getMeasureDefinition(measureType); 
 	 
-	 if(max==null && min==null){ //--->DA CONTROLLARE non entra
-		 System.out.println("--> REQUESTED: Getting list of people...");
-		 System.out.println(); 
-		 people = Person.getAll();
-		
-	 }else if(max != null){
-		 min = 0.;
-		 System.out.println("--> REQUEST: Retrieves people whose " + measureType +" value is in the ["+min+","+max+"] range");
-		 System.out.println();
-		 people = Person.getFilteredPersonByValuesOfRange(md, min, max);
-		 
-	 }else if(min != null){
-		 max = 500.;
+	 if(measureType!=null && (max!=null || min!=null)){ //--->DA CONTROLLARE non entra
+		 min = min==null ? 0. : min ;
+		 max = max==null ? 300. : max;
 		 System.out.println("--> REQUEST: Retrieves people whose " +measureType +" value is in the ["+min+","+max+"] range");
 		 System.out.println();
+		 MeasureDefinition md = MeasureDefinition.getMeasureDefinition(measureType);
 		 people = Person.getFilteredPersonByValuesOfRange(md, min, max);
 		 
 	 }else{
-		 System.out.println("--> REQUEST: Retrieves people whose " +measureType +" value is in the ["+min+","+max+"] range");
-		 System.out.println();
-		 people = Person.getFilteredPersonByValuesOfRange(md, min, max);
+		 System.out.println("--> REQUESTED: Getting list of people...");
+		 System.out.println(); 
+		 people = Person.getAll();
 		 
 	 }
 	 return people;
