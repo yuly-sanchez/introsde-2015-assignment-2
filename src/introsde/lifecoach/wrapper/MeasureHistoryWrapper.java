@@ -13,22 +13,25 @@ import javax.xml.bind.annotation.XmlRootElement;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonRootName;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name="measureHistory")
-public class HealthMeasureHistoryListWrapper implements Serializable{
+public class MeasureHistoryWrapper implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	
-	//@XmlElement(name="measure")
-	public List<HealthMeasureHistory> listMeasure = null;
-	
-	public List<HealthMeasureHistory> getListMeasure() {
-		return listMeasure;
+	@XmlElement(name="measure")
+	public List<HealthMeasureHistory> listMeasureHistory = null;
+
+	@JsonValue
+	public List<HealthMeasureHistory> getListMeasureHistory() {
+		return listMeasureHistory;
 	}
-	
-	public void setListMeasure(List<HealthMeasureHistory> listMeasure) {
-		this.listMeasure = listMeasure;
-	}	
+
+	public void setListMeasureHistory(List<HealthMeasureHistory> listMeasureHistory) {
+		this.listMeasureHistory = listMeasureHistory;
+	}
+		
 }
