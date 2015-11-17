@@ -144,16 +144,10 @@ public class MeasureDefinition implements Serializable {
 	
 	public static List<String> getMeasureTypes(){
 		EntityManager em = LifeCoachDao.instance.createEntityManager();
-		
 		List <String> measureTypes = new ArrayList<String>();
-		List <MeasureDefinition> measureDefTypes = null;
-		try{
-			measureDefTypes = em.createNamedQuery("MeasureDefinition.findAll", MeasureDefinition.class).getResultList();
-			for(MeasureDefinition measureDef : measureDefTypes){
+		List <MeasureDefinition> measureDefTypes = em.createNamedQuery("MeasureDefinition.findAll", MeasureDefinition.class).getResultList();
+		for(MeasureDefinition measureDef : measureDefTypes){
 				measureTypes.add(measureDef.getMeasureName());
-			}
-		}catch(Exception ex){
-			System.out.println();
 		}
 		return measureTypes;
 	}
