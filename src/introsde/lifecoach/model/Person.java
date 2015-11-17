@@ -25,12 +25,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 					query = "SELECT p FROM Person p INNER JOIN p.lifeStatus l "
 							+ "WHERE l.measureDefinition= ?1 AND CAST(l.value NUMERIC(10,2)) BETWEEN ?2 AND ?3"),
 		
-		@NamedQuery(name = "Person.findMinValue",
-					query = "SELECT p FROM Person p INNER JOIN p.lifeStatus l WHERE l.measureDefinition= ?1 AND CAST(l.value NUMERIC(10,2)) >= ?2"),
-					
-		@NamedQuery(name = "Person.findMaxValue",
-					query = "SELECT p FROM Person p INNER JOIN p.lifeStatus l WHERE l.measureDefinition= ?1 AND CAST(l.value NUMERIC(10,2)) <= ?2"),
-					
 		@NamedQuery(name = "Person.findLifeStatus", query="SELECT p FROM Person p INNER JOIN  p.lifeStatus l WHERE l.person= ?1 AND l.measureDefinition= ?2")			
 		
 })
@@ -188,38 +182,13 @@ public class Person implements Serializable {
 		LifeCoachDao.instance.closeConnections(em);
 	}
 
-	public static List<Person> getFilteredPersonByValuesOfRange(
-			MeasureDefinition measureDef, Double min, Double max) {
+	public static List<Person> getFilteredPersonByValuesOfRange(MeasureDefinition measureDef, Double min, Double max) {
 		EntityManager em = LifeCoachDao.instance.createEntityManager();
 		List<Person> people = em.createNamedQuery("Person.findValuesOfRange", Person.class)
 				.setParameter(1, measureDef)
 				.setParameter(2, min)
 				.setParameter(3, max).getResultList();
 		for (Person p : people) {
-			System.out.println(p.toString());
-		}
-		LifeCoachDao.instance.closeConnections(em);
-		return people;
-	}
-	
-	public static List<Person> getFilteredPersonByMinValue(MeasureDefinition measureDef, Double min){
-		EntityManager em = LifeCoachDao.instance.createEntityManager();
-		List<Person> people = em.createNamedQuery("Person.findMinValue", Person.class)
-				.setParameter(1, measureDef)
-				.setParameter(2, min).getResultList();
-		for(Person p : people){
-			System.out.println(p.toString());
-		}
-		LifeCoachDao.instance.closeConnections(em);
-		return people;
-	}
-	
-	public static List<Person> getFilteredPersonByMaxValue(MeasureDefinition measureDef, Double max){
-		EntityManager em = LifeCoachDao.instance.createEntityManager();
-		List<Person> people = em.createNamedQuery("Person.findMaxValue", Person.class)
-				.setParameter(1, measureDef)
-				.setParameter(2, max).getResultList();
-		for(Person p : people){
 			System.out.println(p.toString());
 		}
 		LifeCoachDao.instance.closeConnections(em);
