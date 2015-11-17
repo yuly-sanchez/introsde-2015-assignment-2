@@ -55,16 +55,25 @@ public class PersonResource {
 		this.id = id;
 	}
 
-	// Application integration
+	
+	/**
+	 * Request #2: GET/person/{id}
+	 * 
+	 * @param id
+	 * @return all the personal information plus current measures of person
+	 *         identified by {id}
+	 */
 	@GET
-	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	public Person getPerson() {
-		Person person = this.getPersonById(id);
-		if (person == null)
-			throw new RuntimeException("Get: Person with " + id + " not found");
-		return person;
-	}
-
+    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    public Response getPerson() {
+        Person person = this.getPersonById(id);
+        if (person == null)
+           return Response.status(Response.Status.NOT_FOUND)
+        		   .entity("Get: Person with " + id + " not found").build();
+        else
+           return Response.ok(person).build();
+    }
+	
 	// for the browser
 	@GET
 	@Produces(MediaType.TEXT_XML)
@@ -96,7 +105,6 @@ public class PersonResource {
 			res = Response.noContent().build();
 		} else {
 			System.out.println("Update: Person with " + this.id + " found");
-			res = Response.created(uriInfo.getAbsolutePath()).build();
 			
 			person.setIdPerson(this.id);
 			if(person.getName() == null){
@@ -110,7 +118,10 @@ public class PersonResource {
 			}
 			
 			person.setLifeStatus(existing.getLifeStatus());
-			Person.updatePerson(person);	
+			//res = Response.created(uriInfo.getAbsolutePath()).build();
+			res = Response.ok().build();
+			Person.updatePerson(person);
+			
 		}
 		return res;
 	}
@@ -134,8 +145,6 @@ public class PersonResource {
 	public Person getPersonById(int personId) {
 		System.out.println("--> Reading person from DB with id: " + personId);
 		Person person = Person.getPersonById(personId);
-		System.out.println(person.toString());
-		//System.out.println(person.getLifeStatus().size());
 		return person;
 	}
 	
