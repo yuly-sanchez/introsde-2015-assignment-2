@@ -10,7 +10,7 @@ import java.util.List;
 
 import introsde.lifecoach.converter.DateConverter;
 import introsde.lifecoach.model.*;
-import introsde.lifecoach.wrapper.HealthMeasureHistoryListWrapper;
+import introsde.lifecoach.wrapper.MeasureHistoryWrapper;
 
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -138,7 +138,6 @@ public class PersonResource {
 		Person person = this.getPersonById(this.id);
 		if (person == null)
 			throw new RuntimeException("Delete: Person with " + this.id + " not found");
-		System.out.println("--> Delete: Person with " + this.id + " found");
 		Person.removePerson(person);
 	}
 
@@ -160,11 +159,12 @@ public class PersonResource {
 	@GET
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 	@Path("{measureType}")	
-	public List<HealthMeasureHistory> getMeasureHistories(@PathParam("measureType") String measureType,
+	public MeasureHistoryWrapper getMeasureHistories(@PathParam("measureType") String measureType,
 														  @QueryParam("before") String beforeDate,
 														  @QueryParam("after") String afterDate) throws Exception {
 		
 		List<HealthMeasureHistory> measureHistories = null;
+		MeasureHistoryWrapper measureWrapper = new MeasureHistoryWrapper();
 		
 		Person p = this.getPersonById(id);
 		MeasureDefinition md = MeasureDefinition.getMeasureDefinition(measureType);
@@ -173,19 +173,7 @@ public class PersonResource {
 			System.out.println("--> REQUESTED: getMeasureHistories("+id+", "+measureType+")");
 			System.out.println();
 			measureHistories = HealthMeasureHistory.getMeasureHistoryByMeasureType(p, md);
-			return measureHistories;
-			
-		}else if(beforeDate==null && afterDate!=null){
-			System.out.println("--> REQUESTED: getMeasureHistories("+id+", "+measureType+")");
-			System.out.println();
-			measureHistories = HealthMeasureHistory.getMeasureHistoryByMeasureType(p, md);
-			return measureHistories;
-			
-		}else if(beforeDate!=null && afterDate==null){
-			System.out.println("--> REQUESTED: getMeasureHistories("+id+", "+measureType+")");
-			System.out.println();
-			measureHistories = HealthMeasureHistory.getMeasureHistoryByMeasureType(p, md);
-			return measureHistories;
+			measureWrapper.setListMeasureHistory(measureHistories);
 			
 		}else{
 			System.out.println("--> REQUESTED: getMeasureHistories("+id+", "+measureType+", "+beforeDate+", "+afterDate+")");
@@ -199,9 +187,9 @@ public class PersonResource {
 			after.setTime(dateFormat.parse(afterDate));
 			
 			measureHistories = HealthMeasureHistory.getFilterByDatesHistory(p, md, before, after);
-			return measureHistories;
+			measureWrapper.setListMeasureHistory(measureHistories);
 		}
-
+		return measureWrapper;
 	}
 
 	
