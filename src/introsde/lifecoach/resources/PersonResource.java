@@ -1,14 +1,10 @@
 package introsde.lifecoach.resources;
 
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
-import introsde.lifecoach.converter.DateConverter;
 import introsde.lifecoach.model.*;
 import introsde.lifecoach.wrapper.MeasureHistoryWrapper;
 
@@ -58,7 +54,6 @@ public class PersonResource {
 	
 	/**
 	 * Request #2: GET/person/{id}
-	 * 
 	 * @param id
 	 * @return all the personal information plus current measures of person
 	 *         identified by {id}
@@ -74,7 +69,6 @@ public class PersonResource {
            return Response.ok(person).build();
     }
 	
-	// for the browser
 	@GET
 	@Produces(MediaType.TEXT_XML)
 	public Person getPersonHTML() {
@@ -152,8 +146,7 @@ public class PersonResource {
 	 * Request #11: GET/person/{id}/{measureType}?before={beforeDate}&after={afterDate}
 	 * @param idPerson
 	 * @param measureType
-	 * @return the list of values the MeasureHistory of {measureType} for person
-	 *         identified by {idPerson}
+	 * @return the list of values the MeasureHistory of {measureType} for person identified by {idPerson}
 	 * @throws Exception 
 	 */
 	@GET
@@ -228,7 +221,7 @@ public class PersonResource {
 	 * @param measureType
 	 * @param mid
 	 * @param measureHistory
-	 * @return
+	 * @return 
 	 * @throws Exception
 	 */
 	@PUT
@@ -241,7 +234,7 @@ public class PersonResource {
 		System.out.println("--> REQUESTED: putMeasureType("+this.id+", "+measureType+", "+mid+", "+measureHistory.getValue()+")");
 		System.out.println();
 
-		Calendar calendar = Calendar.getInstance();
+		//Calendar calendar = Calendar.getInstance();
 
 		Response res;
 		HealthMeasureHistory existing = HealthMeasureHistory.getHealthMeasureHistoryById(mid);
@@ -254,12 +247,23 @@ public class PersonResource {
 			System.out.println("--> Update: MeasureType with " + mid + " found");
 			res = Response.created(uriInfo.getAbsolutePath()).build();
 			existing.setValue(measureHistory.getValue());
-			existing.setTimestamp(calendar.getTime());
+			if(measureHistory.getTimestamp() != null){
+				existing.setTimestamp(measureHistory.getTimestamp());
+			}
+			
 			HealthMeasureHistory.updateHealthMeasureHistory(existing);
 		}
 		return res;
 	}
 	
+	/**
+	 * Request #8: POST /person/{id}/{measureType} 
+	 * should save a new value for the {measureType} (e.g. weight) of person identified by {id} and 
+	 * archive the old value in the history
+	 * @param measureType
+	 * @param measureHistory
+	 * @return
+	 */
 	@POST
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
