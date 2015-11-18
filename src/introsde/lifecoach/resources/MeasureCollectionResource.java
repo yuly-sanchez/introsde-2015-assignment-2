@@ -26,17 +26,14 @@ public class MeasureCollectionResource {
 	Request request;
 	
 	/**
-	 * Request #9: GET /measureTypes 
-	 * return the list of measures type
+	 * Request #9: GET /measureTypes
+	 * @return the list of measures type
 	 */
 	@GET
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public MeasureTypesWrapper getMeasureTypes(){
-		System.out.println("==========================================================================================================================");
-    	System.out.println("\t\t\t\t\tRequest #9 : GET /measureTypes");
-    	System.out.println("==========================================================================================================================");
-    	System.out.println();
-        System.out.println("Getting list of measure...");
+		System.out.println("--> REQUEST: Getting list the measure");
+		System.out.println();
 		MeasureTypesWrapper mw = new MeasureTypesWrapper();
 		mw.setListMeasures(MeasureDefinition.getMeasureTypes());
 		System.out.println("MeasureTypes : " + Arrays.toString(mw.getListMeasures().toArray()));
