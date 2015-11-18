@@ -117,6 +117,26 @@
 			</classpath>
 		</java>
 	</target>
+	
+	<target name="execute.client">
+		<antcall target="execute.client-server-xml" />
+		<antcall target="execute.client-server-json" />
+	</target>
+	
+	<target name="execute.client-server-xml">
+		<echo message="Executing Client Server XMl: Create file client-server-xml.log" />
+		<java classname="introsde.lifecoach.ClientApp" classpath="${build.dir}">
+			<arg value="client-server-xml" />
+		</java>
+	</target>
+	
+	<target name="execute.client-server-json">
+		<echo message="Executing Client Server JSON: Create file client-server-json.log" />
+			<java classname="introsde.lifecoach.ClientApp" classpath="${build.dir}">
+				<arg value="client-server-json" />
+			</java>
+	</target>
+	
 	<!-- Run the JUnit Tests -->
 	<!-- Output is XML, could also be plain -->
 	<target name="junit">
