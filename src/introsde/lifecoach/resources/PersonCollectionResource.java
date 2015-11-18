@@ -30,8 +30,6 @@ import javax.ws.rs.core.UriInfo;
 @Path("/person")
 public class PersonCollectionResource {
 
-	// Allows to insert contextual objects into the class,
-	// e.g. ServletContext, Request, Response, UriInfo
 	@Context
 	UriInfo uriInfo;
 	@Context
@@ -77,30 +75,7 @@ public class PersonCollectionResource {
 	 }
 	 return peopleWrapper;
 }
-	/*@GET
-	@Produces({ MediaType.TEXT_PLAIN, MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-	 public List<Person> getPeople(@QueryParam("measureType") String measureType,
-			 					   @QueryParam("max") Double max,
-			 					   @QueryParam("min") Double min) {
-		
-	 List<Person> people = null; 
 	 
-	 if(measureType!=null && (max!=null || min!=null)){ //--->DA CONTROLLARE non entra
-		 min = min==null ? 0. : min ;
-		 max = max==null ? 300. : max;
-		 System.out.println("--> REQUEST: Retrieves people whose " +measureType +" value is in the ["+min+","+max+"] range");
-		 System.out.println();
-		 MeasureDefinition md = MeasureDefinition.getMeasureDefinition(measureType);
-		 people = Person.getFilteredPersonByValuesOfRange(md, min, max);
-		 
-	 }else{
-		 System.out.println("--> REQUESTED: Getting list of people...");
-		 System.out.println(); 
-		 people = Person.getAll();
-		 
-	 }
-	 return people;
-}*/	 
 
 	// retuns the number of people
 	// to get the total number of records
@@ -116,7 +91,6 @@ public class PersonCollectionResource {
 
 	/**
 	 * Request #4: POST/person
-	 * 
 	 * @param person
 	 * @return the newly created person with its assigned id and if a
 	 *         healthprofile is included, create also those measurements for the
