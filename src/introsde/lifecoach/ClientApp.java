@@ -23,6 +23,7 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Application;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -58,7 +59,8 @@ public class ClientApp {
 	private static WebTarget webTarget;
 	private static ClientConfig config;
 	private static Response response;
-	private static URI uri;
+	private static URI server_uri;
+	private static String HEADER="application_xml";
 
 	private static String first_person_id;
 	private static String last_person_id;
@@ -69,21 +71,24 @@ public class ClientApp {
 	private static String measure_id;
 	private static String measure_Type;
 	
+	
+	
 	public static void main(String args[]) throws Exception {
 		
 		String MY_HEROKU_URL = null;
 		MY_HEROKU_URL = "http://127.0.1.1:5700/sdelab"; // MY_HEROKU_URL = https://desolate-castle-6772.herokuapp.com
 		System.out.println("Give me the server address: " + MY_HEROKU_URL);
 		System.out.println();
-		URI base_uri = getBaseURI(MY_HEROKU_URL);  //URI base_uri = getBaseURI(MY_HEROKU_URL + "/sdelab" );
+		server_uri = getBaseURI(MY_HEROKU_URL);  //URI base_uri = getBaseURI(MY_HEROKU_URL + "/sdelab" );
 
 		// elenco tutte le request
-		request_1(base_uri);
-		//request_2(base_uri, first_person_id);
-		//request_3(base_uri, first_person_id);
-		//request_5(base_uri, new_person_id);
-		request_9(base_uri);
-		request_6(base_uri);
+		request_1();
+		request_2(first_person_id);
+		request_3();
+		request_4();
+		request_5();
+		request_9();
+		request_6();
 		
 	}
 
@@ -102,99 +107,82 @@ public class ClientApp {
 	 * @throws ParserConfigurationException
 	 * @throws TransformerException 
 	 */
-	public static void request_1(URI server_uri)throws Exception {
-		System.out.println("Request #1: \tGET " + "\t" + server_uri
-				+ "/person \tAccept:APPLICATION_XML");
-
-		uri = null;
-		try {
-			uri = new URI(server_uri + "/person");
-		} catch (URISyntaxException e) {
-			System.out.println("The URI " + uri + " not work.");
-		}
+	public static void request_1()throws Exception {
+		String RESULT = "ERROR";
+		String uri = server_uri + "/person";
+		
 		config = new ClientConfig();
 		client = ClientBuilder.newClient(config);
 		response = client.target(uri).request().accept(MediaType.APPLICATION_XML).get(Response.class);
-		String result = response.readEntity(String.class);
-		Element rootElement = getRootElement(result);
+		String response_1 = response.readEntity(String.class);
+		
+		Element rootElement = getRootElement(response_1);
 		NodeList listNode = rootElement.getChildNodes();
 		int countPeople = listNode.getLength();
 		first_person_id = rootElement.getFirstChild().getChildNodes().item(0).getTextContent();
 		last_person_id = rootElement.getLastChild().getChildNodes().item(0).getTextContent();
 		
 		if(response.getStatus()==200 && countPeople>2){ 
-			System.out.println("=> Result: " + response.getStatusInfo()); 
-			System.out.println("=> HTTP Status: " + response.getStatus()); 
-			System.out.println(prettyXMLPrint(result));
+			RESULT = "OK";
+			templateRequest(1, "GET" , "/person", response, RESULT);
+			System.out.println(prettyXMLPrint(response_1));
 			
 		}else if(response.getStatus()==200 && countPeople<3){ 
-			System.out.println("=> Failed: Less than 3 people");
-			
-		}else {
-			System.out.println("=> Failed: HTTP error code: " + response.getStatus()); 
+			templateRequest(1, "GET" , "/person", response, RESULT);
 		}
 	}
 
-	public static void request_2(URI server_uri, String person_id) throws Exception{
-		System.out.println("Request #2: \tGET " + "\t" + server_uri + "/person/"+ person_id +"\tAccept:APPLICATION_XML");
-
-		uri = null;
-		try {
-			uri = new URI(server_uri + "/person");
-		} catch (URISyntaxException e) {
-			System.out.println("The URI " + uri + " not work.");
-		}
+	public static void request_2(String person_id) throws Exception{
+		String RESULT = "ERROR";
+		String uri =server_uri + "/person";
+		
 		config = new ClientConfig();
 		client = ClientBuilder.newClient(config);
-		webTarget = client.target(uri+"/").path(person_id);
+		webTarget = client.target(uri + "/").path(person_id);
 		response = webTarget.request().accept(MediaType.APPLICATION_XML).get(Response.class);
 		
 		if(response.getStatus()==200 || response.getStatus()==202){
-			String result = response.readEntity(String.class);
-			System.out.println("=> Result: " + response.getStatusInfo()); 
-			System.out.println("=> HTTP Status: " + response.getStatus()); 
-			System.out.println(prettyXMLPrint(result));
+			RESULT = "OK";
+			String response_2 = response.readEntity(String.class);
+			templateRequest(2, "GET", "/person/" + person_id, response, RESULT);
+			System.out.println(prettyXMLPrint(response_2));
 			
 		}else if(response.getStatus() == 404){
-			System.out.println("=> Result: " + "OK"); 
-			System.out.println("=> HTTP Status: " + response.getStatus());
+			RESULT = "OK";
+			templateRequest(5, "DELETE", "/person/" + person_id, response, RESULT);
 			 
 		}else{
-			System.out.println("=> Failed: HTTP error code: " + response.getStatus());
+			templateRequest(2, "GET", "/person/" + person_id, response, RESULT);
 		}
 
 	}
 	
-	public static void request_3(URI server_uri, String person_id){
-		System.out.println("Request #3: \tPUT \t/person/" + person_id + " \tAccept:APPLICATION_XML \tContentType:APPLICATION_XML");
-		
+	public static void request_3(){
+		String RESULT = "ERROR";
+		String uri = server_uri + "/person";
 		String xml = "<person>"+
 						"<firstname>Pavel</firstname>" +
 					 "</person>";
-		uri=null;
-		try {
-			uri = new URI(server_uri+"/person");
-		} catch (URISyntaxException e) {
-			System.out.println(e.getMessage());
-		}
+		
 		config = new ClientConfig();
 		client = ClientBuilder.newClient(config);
-		webTarget = client.target(uri+"/").path(person_id);
+		webTarget = client.target(uri+"/").path(first_person_id);
 		response = webTarget.request().accept(MediaType.APPLICATION_XML).put(Entity.entity(xml, MediaType.APPLICATION_XML), Response.class);
 		if(response.getStatus() == 200 || response.getStatus() == 201){
-			System.out.println("=> Result: " + response.getStatusInfo());
-			System.out.println("=> HTTP Status: " + response.getStatus());
+			RESULT = "OK";
+			templateRequest(3, "PUT", "/person/" + first_person_id, response, RESULT);
 			System.out.println(response.getStatusInfo());
 			
 		}else {
-			System.out.println("=> Failed : HTTP error code : " + response.getStatus());
+			templateRequest(3, "PUT", "/person/" + first_person_id, response, RESULT);
 		}
 	}
 	
-	public static void request_4(URI server_uri) throws Exception{
-		System.out.println("Request #4: \tPOST \t/person \tAccept:APPLICATION_XML \tContentType:APPLICATION_XML");
-		
-		String xml = "<person>"+
+	
+	public static void request_4() throws Exception{
+		String RESULT = "ERROR";
+		String uri = server_uri + "/person";
+		/*String xml = "<person>"+
 						"<firstname>Chuck</firstname>" +
 						"<lastname>Norris</lastname>" +
 						"<birthdate>1945-01-01T00:00:00+02:00</birthdate>" +
@@ -208,63 +196,54 @@ public class ClientApp {
 					        	"<value>1.73</value>" +
 					        "</measureType>" +
 					    "</healthProfile>" +
+					 "</person>";*/
+		
+		String xml = "<person>"+
+						"<firstname>Chuck</firstname>" +
+						"<lastname>Norris</lastname>" +
+						"<birthdate>1945-01-01T00:00:00+02:00</birthdate>" +
+						"<healthProfile/>" +
 					 "</person>";
-		uri=null;
-		try {
-			uri = new URI(server_uri+"/person");
-		} catch (URISyntaxException e) {
-			System.out.println(e.getMessage());
-		}
+		
 		config = new ClientConfig();
 		client = ClientBuilder.newClient(config);
 		response = client.target(uri).request().accept(MediaType.APPLICATION_XML).post(Entity.entity(xml, MediaType.APPLICATION_XML), Response.class);
-		String result = response.readEntity(String.class);
-		Element rootElement = getRootElement(result);
+		String response_4 = response.readEntity(String.class);
+		Element rootElement = getRootElement(response_4);
 		new_person_id = rootElement.getFirstChild().getChildNodes().item(0).getTextContent();
 		
 		if(response.getStatus()==200 || response.getStatus()==201 || response.getStatus()==202){ 
-			System.out.println("=> Result: " + response.getStatusInfo()); 
-			System.out.println("=> HTTP Status: " + response.getStatus()); 
-			System.out.println(prettyXMLPrint(result));
+			RESULT = "OK";
+			templateRequest(4, "POST", "/person", response, RESULT);
+			System.out.println(prettyXMLPrint(response_4));
 		 
 		}else{
-			System.out.println("=> Failed: HTTP error code: " + response.getStatus());	
+			templateRequest(4, "POST", "/person", response, RESULT);	
 		}
 	}
 	
-	public static void request_5(URI server_uri, String person_id) throws Exception{
-		System.out.println("Request #4: \tDELETE \t/person/" + person_id + "\tAccept:APPLICATION_XML \tContentType:APPLICATION_XML");
+	
+	public static void request_5() throws Exception{
+		String uri = server_uri + "/person";
 		
-		uri=null;
-		try {
-			uri = new URI(server_uri+"/person");
-		} catch (URISyntaxException e) {
-			System.out.println(e.getMessage());
-		}
 		config = new ClientConfig();
 		client = ClientBuilder.newClient(config);
-		webTarget = client.target(uri+"/").path(person_id);
+		webTarget = client.target(uri+"/").path(new_person_id);
 		response = webTarget.request().accept(MediaType.APPLICATION_XML).delete();
 		
 		//call request #2 to check the person with new_person_id
-		request_2(server_uri, new_person_id);
+		request_2(new_person_id);
 	}
 	
 	
-	public static void request_9(URI server_uri) throws Exception{
-		System.out.println("Request #9: \tGET \t/measureTypes \tAccept:APPLICATION_XML");
-		
-		uri=null;
-		try {
-			uri = new URI(server_uri+"/measureTypes");
-		} catch (URISyntaxException e) {
-			System.out.println(e.getMessage());
-		}
+	public static void request_9() throws Exception{
+		String RESULT = "ERROR";
+		String uri = server_uri + "/measureTypes";
 		config = new ClientConfig();
 		client = ClientBuilder.newClient(config);
 		response = client.target(uri).request().accept(MediaType.APPLICATION_XML).get(Response.class);
-		String result = response.readEntity(String.class);
-		Element rootElement = getRootElement(result);
+		String response_9 = response.readEntity(String.class);
+		Element rootElement = getRootElement(response_9);
 		NodeList listNode = rootElement.getChildNodes();
 		int countMeasureType = listNode.getLength();
 		
@@ -276,66 +255,59 @@ public class ClientApp {
 		}
 		
 		if(response.getStatus() == 200 && countMeasureType>2){
-			System.out.println("=> Result: " + response.getStatusInfo());
-			System.out.println("=> HTTP Status: " + response.getStatus());
-			System.out.println(prettyXMLPrint(result));
-			
-		}else if(response.getStatus() == 200 && countMeasureType<3){
-			System.out.println("=> Result: " + "ERROR");
-			System.out.println("=> HTTP Status: " + response.getStatus());
+			RESULT = "OK";
+			templateRequest(9, "GET", "/measureTypes", response, RESULT);
+			System.out.println(prettyXMLPrint(response_9));
 			
 		}else{
-			System.out.println("=> Failed : HTTP error code : " + response.getStatus());
+			templateRequest(9, "GET", "/measureTypes", response, RESULT);
 		}
 	}
 
-	public static void request_6(URI server_uri) throws Exception{
-		uri=null;
-		try {
-			uri = new URI(server_uri+"/person");
-		} catch (URISyntaxException e) {
-			System.out.println(e.getMessage());
-		}
+	
+	public static void request_6() throws Exception{
+		String RESULT = "ERROR";
+		String uri = server_uri + "/person";
+		String person_id = null;
+		String response_result = null;
+		
 		config = new ClientConfig();
 		client = ClientBuilder.newClient(config);
-		String result=null;
+		
 		List<String> personList = new ArrayList<String>();
 		personList.add(first_person_id);
 		personList.add(last_person_id);
 		
 		for(int i=0; i<personList.size();i++){
 			
-			for(int j=0;j<measure_types.size();j++){
+			for(String m : measure_types){
 				
-				System.out.println("Request #6: \tGET \t/person/"+personList.get(i)+"/"+ measure_types.get(j) + " \tAccept:APPLICATION_XML");
-				
-				webTarget = client.target(uri +"/").path(personList.get(i)+"/").path(measure_types.get(j));
+				webTarget = client.target(uri +"/").path(personList.get(i)+"/").path(m);
 				response = webTarget.request().accept(MediaType.APPLICATION_XML).get(Response.class);
-				result = response.readEntity(String.class);
+				String response_6 = response.readEntity(String.class);
 				
-				Element rootElement = getRootElement(result);
+				Element rootElement = getRootElement(response_6);
 				NodeList listNode = rootElement.getChildNodes();
-				System.out.println("ListNode: " + listNode.getLength());
 				
 				if(response.getStatus()==200 && listNode.getLength()>0){
-					measure_Type = measure_types.get(j);
-					measure_id = rootElement.getFirstChild().getFirstChild().getTextContent();
-					System.out.println("measureType: " + measure_Type + "\tmeasureId: " + measure_id);
-					System.out.println("=> Result: " + response.getStatusInfo());
-					System.out.println("=> HTTP Status: " + response.getStatus());
-					System.out.println(prettyXMLPrint(result));
-					return;
-				}else{
-					System.out.println("=> Result: " + "ERROR");
-					System.out.println("=> HTTP Status: " + response.getStatus());
-					return;
-				}
+					response_result = response_6;
+					person_id = personList.get(i);
+					measure_Type = m;
+					measure_id = rootElement.getFirstChild().getFirstChild().getTextContent();	
+				}	
 			}
 		}
+		if(response.getStatus()==200){
+			RESULT = "OK";
+			templateRequest(6, "GET", "/person"+ "/" + person_id + "/" + measure_Type, response, RESULT);
+			System.out.println(prettyXMLPrint(response_result));
+		}else{
+			templateRequest(6, "GET", "/person"+ "/" + person_id + "/" + measure_Type, response, RESULT);
+		}
 	}
-	
-	 
-	
+/*	
+	public static void request_8(URI server_uri){} 
+*/	
 	public static Element getRootElement(String xml)
 			throws ParserConfigurationException, SAXException, IOException {
 		DocumentBuilderFactory domFactory = DocumentBuilderFactory
@@ -346,6 +318,15 @@ public class ClientApp {
 		return doc.getDocumentElement();
 	}
 
+	public static void templateRequest(int numberRequest, String method, String url, Response response, String result){
+		System.out.println("==================================================================================");
+		System.out.println("Request #" + numberRequest + ": "+ method + " " + url + " " + "Accept: " + HEADER + " " + "Content-Type: " + HEADER);
+		System.out.println("=> Result: " + result);
+		System.out.println("=> HTTP Status: " + response.getStatus());
+		System.out.println();
+	}
+	
+	
 	/**
 	 * Print pretty XML
 	 * 
