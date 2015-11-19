@@ -4,6 +4,7 @@ import introsde.lifecoach.wrapper.PeopleWrapper;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.ejb.*;
@@ -104,7 +105,7 @@ public class PersonCollectionResource {
 		
 		System.out.println("--> REQUESTED: createNewPerson(" + person.toString() + ")");
 
-		if (person.getLifeStatus().isEmpty()) {
+		if (person.getLifeStatus() == null) {
 			System.out.println("--> Creating new person without LifeStatus...");
 			return Person.savePerson(person);
 
@@ -112,27 +113,24 @@ public class PersonCollectionResource {
 			System.out.println("--> Creating new person with LifeStatus...");
 
 			//salvo in una lista tutto il lifestatus da creare 
-			List<LifeStatus> personLifeStatus = person.getLifeStatus();
-			System.out.println("--> LifeStatus-ToCreate: " + personLifeStatus.size());
-
+			List<LifeStatus> personLifeStatus = new ArrayList<LifeStatus>();
+			personLifeStatus.addAll(person.getLifeStatus());
+		
 			//elimino il contenuto di lifeStatus
 			person.setLifeStatus(null);
-			System.out.println("--> LifeStatus-Clear: " + person.getLifeStatus().size());
 			
 			//salvo la persona in modo da ricavarmi l'idPerson
 			Person p = Person.savePerson(person);
 			int personId = p.getIdPerson();
-			person.setIdPerson(personId);
-			System.out.println("PersonID: " + person.getIdPerson());
-
+			
 			//creo una lista per controllare i valori passati dalla nuova persona
-			List<LifeStatus> check = new ArrayList<LifeStatus>();
+			//List<LifeStatus> check = new ArrayList<LifeStatus>();
 			//check.addAll(personLifeStatus);
 			
 			// controlliamo il contenuto del lifeStatus appena salvato
-			for (int i=0;i<person.getLifeStatus().size();i++) {
-				LifeStatus lifeS = person.getLifeStatus().get(i);
-				System.out.println(lifeS.toString());
+			for (int i=0;i<personLifeStatus.size();i++) {
+				
+				LifeStatus lifeS = personLifeStatus.get(i);
 				
 				// setto la measureDefinition
 				int idMeasureDef=0;
@@ -158,26 +156,28 @@ public class PersonCollectionResource {
 				default:
 					break;
 				}
-
-				MeasureDefinition md = new MeasureDefinition();
-				md = MeasureDefinition.getMeasureDefinitionById(idMeasureDef);
+				
+				MeasureDefinition md = MeasureDefinition.getMeasureDefinition(lifeS.getMeasureDefinition().getMeasureName());
 				lifeS.setMeasureDefinition(md);
-				System.out.println("--> lifeSNewPerson-Measure: " + lifeS.getMeasureDefinition());
+				//System.out.println("--> lifeSNewPerson-Measure: " + lifeS.getMeasureDefinition());
 
-				// setto il value
-				//lifeS.setValue(check.get(i).getValue());
-				System.out.println("--> lifeSNewPerson-Value: " + lifeS.getValue());
-				
 				// setto la persona
-				//lifeS.setPerson(person);
-				System.out.println("--> lifeSNewPerson-Person: " + lifeS.getPerson());
+				lifeS.setPerson(p);
 				
+				//salvo il lifestatus sul db
 				LifeStatus.saveLifeStatus(lifeS);
-				check.add(lifeS);
+				Calendar calendar = Calendar.getInstance();
+				
+				HealthMeasureHistory hm = new HealthMeasureHistory();
+				hm.setMeasureDefinition(md);
+				hm.setPerson(p);
+				hm.setTimestamp(calendar.getTime());
+				hm.setValue(lifeS.getValue());
+				
+				HealthMeasureHistory.saveHealthMeasureHistory(hm);
 			}
 			
-			person.setLifeStatus(check);
-			return person;
+			return Person.getPersonById(personId);
 		}
 	}
 
