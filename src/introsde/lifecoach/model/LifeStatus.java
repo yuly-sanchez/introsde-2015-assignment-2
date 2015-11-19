@@ -14,15 +14,20 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
+import javax.persistence.TypedQuery;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.persistence.OneToOne;
+
+
+
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -32,8 +37,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 @Entity
 @Table(name = "LifeStatus")
+@NamedQueries({
+	@NamedQuery(name = "LifeStatus.findAll", query = "SELECT l FROM LifeStatus l"),
+	@NamedQuery(name = "LifeStatus.findByMeasureDefAndPerson", query = "SELECT l FROM LifeStatus l WHERE l.measureDefinition= ?1 AND l.person= ?2")	
+})
 
-@NamedQuery(name = "LifeStatus.findAll", query = "SELECT l FROM LifeStatus l")
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement
 public class LifeStatus implements Serializable {
@@ -66,6 +74,12 @@ public class LifeStatus implements Serializable {
 	public LifeStatus() {
 	}
 
+	public LifeStatus(MeasureDefinition md, String value, Person person){
+		this.measureDefinition = md;
+		this.value = value;
+		this.person = person;
+	}
+	
 	public int getIdMeasure() {
 		return this.idMeasure;
 	}
@@ -153,4 +167,20 @@ public class LifeStatus implements Serializable {
 	    tx.commit();
 	    LifeCoachDao.instance.closeConnections(em);
 	}
+	
+	public static LifeStatus getFilteredLifeStatus(MeasureDefinition measureDef, Person person) {
+		EntityManager em = LifeCoachDao.instance.createEntityManager();
+		TypedQuery<LifeStatus> typedQuery = em.createNamedQuery("LifeStatus.findByMeasureDefAndPerson", LifeStatus.class)
+				.setParameter(1, measureDef)
+				.setParameter(2, person);
+		try {
+			LifeStatus ls = typedQuery.getSingleResult();
+			LifeCoachDao.instance.closeConnections(em);
+		    return ls; 
+		  }
+		 catch (Exception ex) {
+			//System.out.println(ex.getMessage());
+		    return null;
+		  }		
+	} 
 }
