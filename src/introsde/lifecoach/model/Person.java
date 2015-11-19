@@ -12,7 +12,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -136,6 +135,7 @@ public class Person implements Serializable {
 
 	public static Person getPersonById(int personId) {
 		EntityManager em = LifeCoachDao.instance.createEntityManager();
+		em.getEntityManagerFactory().getCache().evictAll();
 		Person p = em.find(Person.class, personId);
 		LifeCoachDao.instance.closeConnections(em);
 		return p;
@@ -143,6 +143,7 @@ public class Person implements Serializable {
 
 	public static List<Person> getAll() {
 		EntityManager em = LifeCoachDao.instance.createEntityManager();
+		em.getEntityManagerFactory().getCache().evictAll();
 		List<Person> list = em.createNamedQuery("Person.findAll", Person.class)
 				.getResultList();
 		for (Person p : list) {
