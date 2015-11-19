@@ -268,14 +268,44 @@ public class PersonResource {
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	@Path("{measureType}")
-	public LifeStatus newValueMeasure(@PathParam("measureType") String measureType,
+	public LifeStatus createNewMeasureType(@PathParam("measureType") String measureType,
 							HealthMeasureHistory measureHistory){
-		System.out.println("--> REQUESTED: saveNewValueMeasure("+this.id+", "+measureType+")");
+		System.out.println("--> REQUESTED: createNewMeasureType("+this.id+", "+measureType+")");
 		System.out.println();
 		
-		MeasureDefinition md = MeasureDefinition.getMeasureDefinition(measureType);
+		MeasureDefinition measureDef = MeasureDefinition.getMeasureDefinition(measureType);
 		Person person = Person.getPersonById(this.id);
-		Person p = Person.getFilteredPersonSaveNewValueMeasure(person, md);
-		return null;
+		System.out.println(measureType + " " + this.id);
+		
+		
+		LifeStatus ls = LifeStatus.getFilteredLifeStatus(measureDef, person);
+		if(ls != null){
+			LifeStatus.removeLifeStatus(ls);
+		}
+		
+		LifeStatus newLifeStatus = new LifeStatus(measureDef, measureHistory.getValue(), person);
+		System.out.println(newLifeStatus.toString());
+		LifeStatus.saveLifeStatus(newLifeStatus);
+		
+		measureHistory.setMeasureDefinition(measureDef);
+		measureHistory.setPerson(person);
+		System.out.println(measureHistory.toString());
+		HealthMeasureHistory.saveHealthMeasureHistory(measureHistory);
+		
+		return newLifeStatus;
+		
+		/*LifeStatus.removeLifeStatus(ls);
+		
+		LifeStatus newLifeStatus = new LifeStatus(measureDef, measureHistory.getValue(), person);
+		System.out.println(newLifeStatus.toString());
+		LifeStatus.saveLifeStatus(newLifeStatus);
+		
+		
+		measureHistory.setMeasureDefinition(measureDef);
+		measureHistory.setPerson(person);
+		System.out.println(measureHistory.toString());
+		HealthMeasureHistory.saveHealthMeasureHistory(measureHistory);
+		
+		return newLifeStatus;*/
 	}
 }
