@@ -123,6 +123,25 @@
 		<antcall target="execute.client-server-json" />
 	</target>
 	
+	<target name="execute.client.partnerServer.json">
+		<record name="client-server-json.log" action="start" append="no"/>
+		<echo message="'execute.client.partnerServer.json' target has been called"/>
+		<java classname="client.TestClient" classpath="${build.dir}" fork="true">
+			<arg value="partnerServer"/>
+			<arg value="JSON"/>
+			<classpath>
+				<path location="build" />
+				<fileset dir="${lib.dir}">
+				<include name="**/*.jar" />
+				<include name="*.jar" />
+				</fileset>
+			</classpath>
+		</java>
+		<record name="client-server-json.log" action="stop"/>
+		<echo message="Created the file client-server-json.log containing the output of the execute.client target" />
+	</target>
+	
+	
 	<target name="execute.client-server-xml">
 		<echo message="Executing Client Server XMl: Create file client-server-xml.log" />
 		<java classname="introsde.lifecoach.ClientApp" classpath="${build.dir}">
