@@ -84,6 +84,7 @@
 		<delete dir="${ivy.jar.dir}" />
 		<echo message="${ivy.jar.dir} has been deleted" />
 	</target>
+	
 	<!--<target name="install">-->
 	<target name="install" depends="clean, init">
 		<echo message="Compile target has been called" />
@@ -119,15 +120,15 @@
 	</target>
 	
 	<target name="execute.client">
-		<antcall target="execute.client-server-xml" />
-		<antcall target="execute.client-server-json" />
+		<echo message="app start introsde.lifecoach in ${build.dir}" />
+		<antcall target="execute.client-myServer-xml" />
+		<antcall target="execute.client-myServer-json" />
 	</target>
 	
-	<target name="execute.client.partnerServer.json">
+	<target name="execute.client.myServer.json">
 		<record name="client-server-json.log" action="start" append="no"/>
-		<echo message="'execute.client.partnerServer.json' target has been called"/>
-		<java classname="client.TestClient" classpath="${build.dir}" fork="true">
-			<arg value="partnerServer"/>
+		<echo message="'execute.client.myServer.json' target has been called"/>
+		<java classname="introsde.lifecoach.ClientApp" classpath="${build.dir}" fork="true">
 			<arg value="JSON"/>
 			<classpath>
 				<path location="build" />
@@ -141,20 +142,22 @@
 		<echo message="Created the file client-server-json.log containing the output of the execute.client target" />
 	</target>
 	
-	
-	<target name="execute.client-server-xml">
-		<echo message="Executing Client Server XMl: Create file client-server-xml.log" />
-		<java classname="introsde.lifecoach.ClientApp" classpath="${build.dir}">
-			<arg value="client-server-xml" />
-		</java>
-	</target>
-	
-	<target name="execute.client-server-json">
-		<echo message="Executing Client Server JSON: Create file client-server-json.log" />
-			<java classname="introsde.lifecoach.ClientApp" classpath="${build.dir}">
-				<arg value="client-server-json" />
+	<target name="execute.client.myServer.xml">
+			<record name="client-server-xml.log" action="start" append="no"/>
+			<echo message="'execute.client.myServer.xml' target has been called"/>
+			<java classname="introsde.lifecoach.ClientApp" classpath="${build.dir}" fork="true">
+				<arg value="XML"/>
+				<classpath>
+					<path location="build" />
+					<fileset dir="${lib.dir}">
+					<include name="**/*.jar" />
+					<include name="*.jar" />
+					</fileset>
+				</classpath>
 			</java>
-	</target>
+			<record name="client-server-xml.log" action="stop"/>
+			<echo message="Created the file client-server-xml.log containing the output of the execute.client target" />
+		</target>
 	
 	<!-- Run the JUnit Tests -->
 	<!-- Output is XML, could also be plain -->
