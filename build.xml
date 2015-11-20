@@ -120,7 +120,7 @@
 	</target>
 	
 	<target name="execute.client">
-		<echo message="app start introsde.lifecoach in ${build.dir}" />
+		<echo message="'execute.client' target has been called" />
 		<antcall target="execute.client.myServer.json" />
 		<antcall target="execute.client.myServer.xml" />
 	</target>
