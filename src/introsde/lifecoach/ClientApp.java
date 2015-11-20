@@ -58,11 +58,11 @@ public class ClientApp {
 	
 	public static void main(String args[]) throws Exception {
 		
-		String MY_HEROKU_URL = "http://127.0.1.1:5700/sdelab"; // MY_HEROKU_URL = https://desolate-castle-6772.herokuapp.com
-		System.out.println("The server address: " + MY_HEROKU_URL);
+		String MY_SERVER = "http://127.0.1.1:5700/sdelab"; // https://desolate-castle-6772.herokuapp.com
+		System.out.println("The server address: " + MY_SERVER);
 		System.out.println();
 		
-		server_uri = getBaseURI(MY_HEROKU_URL);  //URI base_uri = getBaseURI(MY_HEROKU_URL + "/sdelab" );
+		server_uri = getBaseURI(MY_SERVER);  //URI base_uri = getBaseURI(MY_HEROKU_URL + "/sdelab" );
 		
 		/*int argCount = args.length;
 		if(argCount == 0) {
@@ -424,7 +424,6 @@ public class ClientApp {
 						person_id = personList.get(i);
 						measure_Type = m;
 						measure_id = rootElement.getFirstChild().getFirstChild().getTextContent();
-						System.out.println(measure_Type + " " + measure_id);
 					}	
 				}
 			}
@@ -447,7 +446,6 @@ public class ClientApp {
 						person_id = personList.get(i);
 						measure_Type = m;
 						measure_id = arr.getJSONObject(i).get("mid").toString();
-						System.out.println(measure_Type + " " + measure_id);
 					}
 				}
 			}
