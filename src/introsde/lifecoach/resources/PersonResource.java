@@ -285,27 +285,13 @@ public class PersonResource {
 		
 		LifeStatus newLifeStatus = new LifeStatus(measureDef, measureHistory.getValue(), person);
 		System.out.println(newLifeStatus.toString());
-		LifeStatus.saveLifeStatus(newLifeStatus);
+		newLifeStatus = LifeStatus.saveLifeStatus(newLifeStatus);
 		
 		measureHistory.setMeasureDefinition(measureDef);
 		measureHistory.setPerson(person);
 		System.out.println(measureHistory.toString());
 		HealthMeasureHistory.saveHealthMeasureHistory(measureHistory);
 		
-		return newLifeStatus;
-		
-		/*LifeStatus.removeLifeStatus(ls);
-		
-		LifeStatus newLifeStatus = new LifeStatus(measureDef, measureHistory.getValue(), person);
-		System.out.println(newLifeStatus.toString());
-		LifeStatus.saveLifeStatus(newLifeStatus);
-		
-		
-		measureHistory.setMeasureDefinition(measureDef);
-		measureHistory.setPerson(person);
-		System.out.println(measureHistory.toString());
-		HealthMeasureHistory.saveHealthMeasureHistory(measureHistory);
-		
-		return newLifeStatus;*/
+		return LifeStatus.getLifeStatusById(newLifeStatus.getIdMeasure());
 	}
 }
