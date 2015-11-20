@@ -31,6 +31,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 
@@ -77,7 +78,7 @@ public class HealthMeasureHistory implements Serializable {
 
 	@Temporal(TemporalType.DATE)
 	@Column(name="timestamp")
-	//@XmlJavaTypeAdapter(DateAdapter.class)
+	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
 	@XmlElement(name="created")
 	@JsonProperty("created")
 	private Date timestamp;
