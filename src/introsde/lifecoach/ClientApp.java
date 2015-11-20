@@ -43,7 +43,7 @@ public class ClientApp {
 	private static WebTarget webTarget;
 	private static ClientConfig config;
 	private static Response response;
-	private static URI server_uri;
+	private static URI BASE_URI;
 
 	private static String first_person_id;
 	private static String last_person_id;
@@ -58,27 +58,30 @@ public class ClientApp {
 	
 	public static void main(String args[]) throws Exception {
 		
-		String MY_SERVER = "http://127.0.1.1:5700/sdelab"; // https://desolate-castle-6772.herokuapp.com
-		System.out.println("The server address: " + MY_SERVER);
-		System.out.println();
 		
-		server_uri = getBaseURI(MY_SERVER);  //URI base_uri = getBaseURI(MY_HEROKU_URL + "/sdelab" );
+		//String MY_SERVER = "http://127.0.1.1:5700/sdelab";
+		//BASE_URI = getBaseURI(MY_SERVER);
 		
-		/*int argCount = args.length;
+		String MY_SERVER = "https://desolate-castle-6772.herokuapp.com";
+		BASE_URI = getBaseURI(MY_SERVER + "/sdelab");
+
+		System.out.println("Starting sdelab standalone HTTP server...");
+		System.out.println("Starting sdelab REST services...");
+		System.out.println("Server started on " + BASE_URI + "\n[kill the process to exit]");
+		
+		
+		int argCount = args.length;
 		if(argCount == 0) {
-			System.out.println("I don't change attribute MeadiaType.");
+			System.out.println("You must to choose a MediaType.");
 		} else {
 			String method = args[0];
 			
-			if(method.equals("client-server-xml")) {
+			if(method.equals("XML")) {
 				mediaType = MediaType.APPLICATION_XML;
-			}else if (method.equals("client-server-json")) {
+			}else if (method.equals("JSON")) {
 				mediaType = MediaType.APPLICATION_JSON;
 			}
-		}*/
-		
-		mediaType = MediaType.APPLICATION_XML;
-		//mediaType = MediaType.APPLICATION_JSON;
+		}
 		
 		// elenco tutte le request
 		request_1(); 
@@ -112,7 +115,7 @@ public class ClientApp {
 	 */
 	public static void request_1()throws Exception {
 		String RESULT = "ERROR";
-		String uri = server_uri + "/person";
+		String uri = BASE_URI + "/person";
 		
 		config = new ClientConfig();
 		client = ClientBuilder.newClient(config);
@@ -158,7 +161,7 @@ public class ClientApp {
 	 */
 	public static void request_2() throws Exception{
 		String RESULT = "ERROR";
-		String uri =server_uri + "/person";
+		String uri =BASE_URI + "/person";
 		
 		config = new ClientConfig();
 		client = ClientBuilder.newClient(config);
@@ -188,7 +191,7 @@ public class ClientApp {
 	 */
 	public static void request_3(){
 		String RESULT = "ERROR";
-		String uri = server_uri + "/person";
+		String uri = BASE_URI + "/person";
 		String xml = "<person>"+
 						"<firstname>AAA</firstname>" +
 					 "</person>";
@@ -227,7 +230,7 @@ public class ClientApp {
 	 */
 	public static void request_4() throws Exception{
 		String RESULT = "ERROR";
-		String uri = server_uri + "/person";
+		String uri = BASE_URI + "/person";
 		String xml = "<person>"+
 						"<firstname>Chuck</firstname>" +
 						"<lastname>Norris</lastname>" +
@@ -302,7 +305,7 @@ public class ClientApp {
 	 */
 	public static void request_5() throws Exception{
 		String RESULT = "ERROR";
-		String uri = server_uri + "/person";
+		String uri = BASE_URI + "/person";
 		
 		config = new ClientConfig();
 		client = ClientBuilder.newClient(config);
@@ -338,7 +341,7 @@ public class ClientApp {
 	 */
 	public static void request_6() throws Exception{
 		String RESULT = "ERROR";
-		String uri = server_uri + "/measureTypes";
+		String uri = BASE_URI + "/measureTypes";
 		
 		config = new ClientConfig();
 		client = ClientBuilder.newClient(config);
@@ -392,7 +395,7 @@ public class ClientApp {
 	 */
 	public static void request_7() throws Exception{
 		String RESULT = "ERROR";
-		String uri = server_uri + "/person";
+		String uri = BASE_URI + "/person";
 		String person_id = null;
 		String response_result = null;
 		
@@ -465,7 +468,7 @@ public class ClientApp {
 	 */
 	public static void request_8() throws Exception{
 		String RESULT = "ERROR";
-		String uri = server_uri + "/person";
+		String uri = BASE_URI + "/person";
 		
 		config = new ClientConfig();
 		client = ClientBuilder.newClient(config);
@@ -500,7 +503,7 @@ public class ClientApp {
 	 */
 	public static void request_9() throws Exception{
 		String RESULT = "ERROR";
-		String uri = server_uri + "/person";
+		String uri = BASE_URI + "/person";
 		String xml = "<measure>"+
 						"<value>72</value>" +
 						"<created>2011-12-09</created>" + 
@@ -571,7 +574,7 @@ public class ClientApp {
 	 */
 	public static void request_10() throws Exception{
 		String RESULT = "ERROR";
-		String uri = server_uri + "/person";
+		String uri = BASE_URI + "/person";
 		String xml = "<measure>"+
 						"<value>90</value>" +
 						"<created>2011-12-09</created>" + 
@@ -631,7 +634,7 @@ public class ClientApp {
 	 */
 	public static void request_11() throws Exception{
 		String RESULT = "ERROR";
-		String uri = server_uri + "/person";
+		String uri = BASE_URI + "/person";
 		
 		String before = "2015-11-01";
 		String after = "2015-11-15";
@@ -676,7 +679,7 @@ public class ClientApp {
 	 */
 	public static void request_12() throws Exception{
 		String RESULT = "ERROR";
-		String uri = server_uri + "/person";
+		String uri = BASE_URI + "/person";
 		
 		Double max = 1.78;
 		Double min = 1.70;
