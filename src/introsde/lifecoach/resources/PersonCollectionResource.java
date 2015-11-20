@@ -133,30 +133,6 @@ public class PersonCollectionResource {
 				LifeStatus lifeS = personLifeStatus.get(i);
 				
 				// setto la measureDefinition
-				int idMeasureDef=0;
-				switch (lifeS.getMeasureDefinition().getMeasureName()) {
-				case "weight":
-					idMeasureDef = 1;
-					break;
-				case "height":
-					idMeasureDef = 2;
-					break;
-				case "steps":
-					idMeasureDef = 3;
-					break;
-				case "blood pressure":
-					idMeasureDef = 4;
-					break;
-				case "heart rate":
-					idMeasureDef = 5;
-					break;
-				case "bmi":
-					idMeasureDef = 6;
-					break;
-				default:
-					break;
-				}
-				
 				MeasureDefinition md = MeasureDefinition.getMeasureDefinition(lifeS.getMeasureDefinition().getMeasureName());
 				lifeS.setMeasureDefinition(md);
 				//System.out.println("--> lifeSNewPerson-Measure: " + lifeS.getMeasureDefinition());
