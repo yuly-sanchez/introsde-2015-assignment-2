@@ -121,8 +121,8 @@
 	
 	<target name="execute.client">
 		<echo message="app start introsde.lifecoach in ${build.dir}" />
-		<antcall target="execute.client-myServer-xml" />
-		<antcall target="execute.client-myServer-json" />
+		<antcall target="execute.client.myServer.json" />
+		<antcall target="execute.client.myServer.xml" />
 	</target>
 	
 	<target name="execute.client.myServer.json">
