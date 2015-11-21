@@ -168,6 +168,12 @@ public class LifeStatus implements Serializable {
 	    LifeCoachDao.instance.closeConnections(em);
 	}
 	
+	/**
+	 * This function return a lifeStatus given a measureDefinition and a person
+	 * @param measureDef
+	 * @param person
+	 * @return
+	 */
 	public static LifeStatus getFilteredLifeStatus(MeasureDefinition measureDef, Person person) {
 		EntityManager em = LifeCoachDao.instance.createEntityManager();
 		TypedQuery<LifeStatus> typedQuery = em.createNamedQuery("LifeStatus.findByMeasureDefAndPerson", LifeStatus.class)
@@ -179,7 +185,6 @@ public class LifeStatus implements Serializable {
 		    return ls; 
 		  }
 		 catch (Exception ex) {
-			//System.out.println(ex.getMessage());
 		    return null;
 		  }		
 	} 
