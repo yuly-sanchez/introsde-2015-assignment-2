@@ -56,7 +56,8 @@ public class PersonCollectionResource {
 			 					   	 @QueryParam("max") Double max,
 			 					     @QueryParam("min") Double min) {
 		
-	 List<Person> people = new ArrayList<Person>(); 
+	 List<Person> people = new ArrayList<Person>();
+	 
 	 PeopleWrapper peopleWrapper = new PeopleWrapper();
 	 
 	 if(measureType!=null && (max!=null || min!=null)){ //--->DA CONTROLLARE non entra
@@ -79,7 +80,6 @@ public class PersonCollectionResource {
 	 
 
 	// retuns the number of people
-	// to get the total number of records
 	@GET
 	@Path("count")
 	@Produces(MediaType.TEXT_PLAIN)
@@ -112,44 +112,47 @@ public class PersonCollectionResource {
 		} else {
 			System.out.println("--> Creating new person with LifeStatus...");
 
-			//salvo in una lista tutto il lifestatus da creare 
+			//store the new lifestatus of the person created in a new list 
 			List<LifeStatus> personLifeStatus = new ArrayList<LifeStatus>();
 			personLifeStatus.addAll(person.getLifeStatus());
 		
-			//elimino il contenuto di lifeStatus
+			//cancel lifeStatus of the person 
 			person.setLifeStatus(null);
 			
-			//salvo la persona in modo da ricavarmi l'idPerson
+			//save of the person to obtain a person id
 			Person p = Person.savePerson(person);
 			int personId = p.getIdPerson();
 			
-			//creo una lista per controllare i valori passati dalla nuova persona
-			//List<LifeStatus> check = new ArrayList<LifeStatus>();
-			//check.addAll(personLifeStatus);
-			
-			// controlliamo il contenuto del lifeStatus appena salvato
+			// check the list of the lifeStatus saved
 			for (int i=0;i<personLifeStatus.size();i++) {
 				
+				//obtain one lifeStatus of the list
 				LifeStatus lifeS = personLifeStatus.get(i);
 				
-				// setto la measureDefinition
+				// set measureDefiniton of the one lifeStatus
 				MeasureDefinition md = MeasureDefinition.getMeasureDefinition(lifeS.getMeasureDefinition().getMeasureName());
 				lifeS.setMeasureDefinition(md);
 				//System.out.println("--> lifeSNewPerson-Measure: " + lifeS.getMeasureDefinition());
 
-				// setto la persona
+				// set person of the one lifeStatus 
 				lifeS.setPerson(p);
 				
-				//salvo il lifestatus sul db
+				//save lifeStatus into db
 				LifeStatus.saveLifeStatus(lifeS);
+				
 				Calendar calendar = Calendar.getInstance();
 				
 				HealthMeasureHistory hm = new HealthMeasureHistory();
+				//set measureDefinition of the new measure
 				hm.setMeasureDefinition(md);
+				//set person of the of the new measure
 				hm.setPerson(p);
+				//set created date of the new measure
 				hm.setTimestamp(calendar.getTime());
+				//set value of the new measure
 				hm.setValue(lifeS.getValue());
 				
+				//save a lifeStatus (new measure) into table of the MeasureHistory db 
 				HealthMeasureHistory.saveHealthMeasureHistory(hm);
 			}
 			
