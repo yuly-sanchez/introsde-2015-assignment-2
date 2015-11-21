@@ -39,39 +39,34 @@ import org.xml.sax.SAXException;
 
 public class ClientApp {
 
-	private static Client client;
-	private static WebTarget webTarget;
-	private static ClientConfig config;
-	private static Response response;
-	private static URI BASE_URI;
+	private String first_person_id;
+	private String last_person_id;
 
-	private static String first_person_id;
-	private static String last_person_id;
+	private String new_person_id;
+	private List<String> measure_types;
 
-	private static String new_person_id;
-	private static List<String> measure_types;
-
-	private static String measure_id;
-	private static String measure_Type;
-	
-	private static String mediaType;
+	private String measure_id;
+	private String measure_Type;
 	
 	public static void main(String args[]) throws Exception {
 		
 		
 		//String MY_SERVER = "http://127.0.1.1:5700/sdelab";
 		//BASE_URI = getBaseURI(MY_SERVER);
+		//String MY_SERVER = "https://desolate-castle-6772.herokuapp.com";
 		
-		String MY_SERVER = "https://desolate-castle-6772.herokuapp.com";
-		BASE_URI = getBaseURI(MY_SERVER + "/sdelab");
-
+		//Configure client
+		ClientConfig clientConfig = new ClientConfig();
+		Client client = ClientBuilder.newClient(clientConfig);
+		WebTarget service = client.target(getBaseURI());
+		
 		System.out.println("Starting sdelab standalone HTTP server...");
-		System.out.println("Starting sdelab REST services...");
-		System.out.println("Server started on " + BASE_URI + "\n[kill the process to exit]");
-		
+		System.out.println("Server started on " + getBaseURI() + "\n[kill the process to exit]");
 		
 		int argCount = args.length;
-		if(argCount == 0) {
+		String mediaType = MediaType.APPLICATION_JSON;
+		
+		/*if(argCount == 0) {
 			System.out.println("You must to choose a MediaType.");
 		} else {
 			String method = args[0];
@@ -81,27 +76,32 @@ public class ClientApp {
 			}else if (method.equals("JSON")) {
 				mediaType = MediaType.APPLICATION_JSON;
 			}
-		}
+		}*/
 		
-		// elenco tutte le request
-		request_1(); 
-		request_2(); 
-		request_3(); 
-		request_4(); 
-		request_5(); 
-		request_6(); 
-		request_7();
-		request_8(); 
+		ClientApp testClient = new ClientApp();
+
+		testClient.request_1(service, mediaType); 
+		testClient.request_2(service, mediaType); 
+		testClient.request_3(service, mediaType);
+		testClient.request_4(service, mediaType);
+		testClient.request_5(service, mediaType);
+		testClient.request_6(service, mediaType);
+		testClient.request_7(service, mediaType);
+		testClient.request_8(service, mediaType);
 		
-		request_9();
-		request_10();
-		request_11();
-		request_12();
+		testClient.request_9(service, mediaType);
+		testClient.request_10(service, mediaType);
+		testClient.request_11(service, mediaType);
+		testClient.request_12(service, mediaType);
 		
 	}
 
-	private static URI getBaseURI(String server_url) {
-		return UriBuilder.fromUri(server_url).build();
+	/**
+     * Get base uri of service
+     * @return
+     */
+	private static URI getBaseURI() {
+		return UriBuilder.fromUri("https://desolate-castle-6772.herokuapp.com/sdelab").build();
 	}
 
 	/**
@@ -113,16 +113,14 @@ public class ClientApp {
 	 * of the last person (last_person_id)@param server_uri
 	 * @throws Exception 
 	 */
-	public static void request_1()throws Exception {
+	public void request_1(WebTarget service, String mediaType)throws Exception {
 		String RESULT = "ERROR";
-		String uri = BASE_URI + "/person";
+		String path = "/person";
 		
-		config = new ClientConfig();
-		client = ClientBuilder.newClient(config);
 		// Request # 1: GET /person
-		response = client.target(uri).request().accept(mediaType).get(Response.class);
-		
+		Response response = service.path(path).request().accept(mediaType).get(Response.class);
 		String response_1 = response.readEntity(String.class);
+		
 		int countPeople;
 		
 		if(mediaType == MediaType.APPLICATION_XML){
@@ -149,7 +147,7 @@ public class ClientApp {
 				RESULT = "OK";
 			}
 		}
-		templateRequest(1, "GET" , "/person", response, RESULT, mediaType);
+		templateRequest(1, "GET", path, response, RESULT, mediaType);
 		System.out.println(prettyFormatPrint(response_1, mediaType));
 	}
 
@@ -159,16 +157,12 @@ public class ClientApp {
 	 * If the responses for this is 200 or 202, the result is OK.
 	 * @throws Exception
 	 */
-	public static void request_2() throws Exception{
+	public void request_2(WebTarget service, String mediaType) throws Exception{
 		String RESULT = "ERROR";
-		String uri =BASE_URI + "/person";
-		
-		config = new ClientConfig();
-		client = ClientBuilder.newClient(config);
+		String path = "/person/" + first_person_id;
 		
 		// Request # 2: GET /person/first_person_id
-		webTarget = client.target(uri + "/").path(first_person_id);
-		response = webTarget.request().accept(mediaType).get(Response.class);
+		Response response = service.path(path).request().accept(mediaType).get(Response.class);
 		String response_2 = response.readEntity(String.class);
 		
 		if(mediaType == MediaType.APPLICATION_XML){
@@ -180,7 +174,7 @@ public class ClientApp {
 				RESULT = "OK";
 			}
 		}
-		templateRequest(2, "GET", "/person/" + first_person_id, response, RESULT, mediaType);
+		templateRequest(2, "GET", path, response, RESULT, mediaType);
 		System.out.println(prettyFormatPrint(response_2, mediaType));	
 	}
 	
@@ -189,34 +183,33 @@ public class ClientApp {
 	 * Send R#3 for first_person_id changing the firstname. 
 	 * If the responses has the name changed, the result is OK.
 	 */
-	public static void request_3(){
+	public void request_3(WebTarget service, String mediaType){
 		String RESULT = "ERROR";
-		String uri = BASE_URI + "/person";
+		String path = "/person/" + first_person_id;
+		
 		String xml = "<person>"+
 						"<firstname>AAA</firstname>" +
 					 "</person>";
 		
-		config = new ClientConfig();
-		client = ClientBuilder.newClient(config);
-		webTarget = client.target(uri+"/").path(first_person_id);
+		JSONObject obj = new JSONObject();
+		obj.put("firstname", "AAA");
 		
+		Response response = null;
 		
 		if(mediaType == MediaType.APPLICATION_XML){
 			// Request # 3: PUT /person/first_person_id
-			response = webTarget.request().accept(mediaType).put(Entity.entity(xml, mediaType), Response.class);
+			response = service.path(path).request().accept(mediaType).put(Entity.entity(xml, mediaType), Response.class);
 			if(response.getStatus() == 200 || response.getStatus() == 201){
 				RESULT = "OK";
 			}
 		}else if(mediaType == MediaType.APPLICATION_JSON){
-			JSONObject obj = new JSONObject();
-			obj.put("firstname", "AAA");
 			// Request # 3: PUT /person/first_person_id
-			response = webTarget.request().accept(mediaType).put(Entity.entity(obj.toString(), mediaType), Response.class);
+			response = service.path(path).request().accept(mediaType).put(Entity.entity(obj.toString(), mediaType), Response.class);
 			if(response.getStatus() == 200 || response.getStatus() == 201){
 				RESULT = "OK";
 			}
 		}
-		templateRequest(3, "PUT", "/person/" + first_person_id, response, RESULT, mediaType);
+		templateRequest(3, "PUT", path, response, RESULT, mediaType);
 		System.out.println(response.getStatusInfo());	
 	}
 	
@@ -228,9 +221,10 @@ public class ClientApp {
 	 * with a person in the body who has an ID, the result is OK.
 	 * @throws Exception
 	 */
-	public static void request_4() throws Exception{
+	public void request_4(WebTarget service, String mediaType) throws Exception{
 		String RESULT = "ERROR";
-		String uri = BASE_URI + "/person";
+		String path = "/person";
+		
 		String xml = "<person>"+
 						"<firstname>Chuck</firstname>" +
 						"<lastname>Norris</lastname>" +
@@ -247,15 +241,30 @@ public class ClientApp {
 					    "</healthProfile>" +
 					 "</person>";
 		
+		JSONObject obj = new JSONObject();
+		obj.put("firstname", "Pinco");
+		obj.put("lastname", "Pallino");
+		obj.put("birthdate", "1945-01-01");
 		
-		config = new ClientConfig();
-		client = ClientBuilder.newClient(config);
+    	/*JSONObject jsonMeasure1 = new JSONObject();
+    	jsonMeasure1.put("measure", "weight");
+    	jsonMeasure1.put("value", "78.9");
+    	
+    	JSONObject jsonMeasure2 = new JSONObject();
+    	jsonMeasure2.put("measure", "height");
+    	jsonMeasure2.put("value", "172.0");*/
+
+    	JSONArray healthProfile = new JSONArray();
+    	obj.put("healthProfile", healthProfile);
+
 		
+		Response response = null;
 		String response_4 = null;
 		
 		if(mediaType == MediaType.APPLICATION_XML){
+			
 			// Request # 4: POST /person
-			response = client.target(uri).request().accept(mediaType).post(Entity.entity(xml, mediaType), Response.class);
+			response = service.path(path).request().accept(mediaType).post(Entity.entity(xml, mediaType), Response.class);
 			response_4 = response.readEntity(String.class);
 			
 			Element rootElement = getRootElement(response_4);
@@ -266,23 +275,9 @@ public class ClientApp {
 			}
 			
 		}else if(mediaType == MediaType.APPLICATION_JSON){
-			JSONObject obj = new JSONObject();
-			obj.put("firstname", "Pinco");
-			obj.put("lastname", "Pallino");
-			obj.put("birthdate", "1945-01-01");
-			JSONArray arr = new JSONArray();
-			//JSONObject obj1 = new JSONObject();
-			//obj1.put("measure", "weight");
-			//obj1.put("value", "78.9");
-			//JSONObject obj2 = new JSONObject();
-			//obj2.put("measure", "height");
-			//obj2.put("value", "172");
-			//arr.put(obj1);
-			//arr.put(obj2);
-			obj.put("healthProfile", arr);
-			
+						
 			// Request # 4: POST /person
-			response = client.target(uri).request().accept(mediaType).post(Entity.entity(obj.toString(), mediaType), Response.class);
+			response = service.path(path).request().accept(mediaType).post(Entity.entity(obj.toString(), mediaType), Response.class);
 			response_4 = response.readEntity(String.class);
 			
 			JSONObject obj_id = new JSONObject(response_4);
@@ -292,7 +287,7 @@ public class ClientApp {
 				RESULT = "OK";
 			}
 		}
-		templateRequest(4, "POST", "/person", response, RESULT, mediaType);
+		templateRequest(4, "POST", path, response, RESULT, mediaType);
 		System.out.println(prettyFormatPrint(response_4, mediaType));	
 	}
 	
@@ -303,31 +298,27 @@ public class ClientApp {
 	 * If the answer is 404, your result must be OK.
 	 * @throws Exception
 	 */
-	public static void request_5() throws Exception{
+	public void request_5(WebTarget service, String mediaType) throws Exception{
 		String RESULT = "ERROR";
-		String uri = BASE_URI + "/person";
-		
-		config = new ClientConfig();
-		client = ClientBuilder.newClient(config);
-		webTarget = client.target(uri+"/").path(new_person_id);
+		String path = "/person/" + new_person_id;
 		
 		// Request # 5: DELETE /person/new_person_id
-		response = webTarget.request().accept(mediaType).delete();
+		Response response = service.path(path).request().accept(mediaType).delete();
 		
 		if(mediaType == MediaType.APPLICATION_XML){
 			// Request # 2: GET /person/new_person_id
-			response = webTarget.request().accept(mediaType).get(Response.class);
+			response = service.path(path).request().accept(mediaType).get(Response.class);
 			if(response.getStatus() == 404){
 				RESULT = "OK";
 			}
 		}else if(mediaType == MediaType.APPLICATION_JSON){
 			// Request # 2: GET /person/new_person_id
-			response = webTarget.request().accept(mediaType).get(Response.class);
+			response = service.path(path).request().accept(mediaType).get(Response.class);
 			if(response.getStatus() == 404){
 				RESULT = "OK";
 			}
 		}
-		templateRequest(5, "DELETE", "/person/" + new_person_id, response, RESULT, mediaType);
+		templateRequest(5, "DELETE", path + new_person_id, response, RESULT, mediaType);
 		System.out.println("Person with the id " + new_person_id + " is deleted");
 	}
 	
@@ -339,15 +330,12 @@ public class ClientApp {
 	 * Save all measureTypes into array (measure_types)
 	 * @throws Exception
 	 */
-	public static void request_6() throws Exception{
+	public void request_6(WebTarget service, String mediaType) throws Exception{
 		String RESULT = "ERROR";
-		String uri = BASE_URI + "/measureTypes";
-		
-		config = new ClientConfig();
-		client = ClientBuilder.newClient(config);
+		String path = "/measureTypes";
 		
 		// Request # 9: GET /measureTypes
-		response = client.target(uri).request().accept(mediaType).get(Response.class);
+		Response response = service.path(path).request().accept(mediaType).get(Response.class);
 		String response_9 = response.readEntity(String.class);
 		
 		int countMeasureType;
@@ -380,7 +368,7 @@ public class ClientApp {
 				RESULT = "OK";
 			}
 		}
-		templateRequest(6, "GET", "/measureTypes", response, RESULT, mediaType);
+		templateRequest(6, "GET", path, response, RESULT, mediaType);
 		System.out.println(prettyFormatPrint(response_9, mediaType));	
 	}
 
@@ -393,18 +381,15 @@ public class ClientApp {
 	 * Store one measure_id and one measureType.
 	 * @throws Exception
 	 */
-	public static void request_7() throws Exception{
+	public void request_7(WebTarget service, String mediaType) throws Exception{
 		String RESULT = "ERROR";
-		String uri = BASE_URI + "/person";
+		String path = "/person/";
+		
 		String person_id = null;
 		String response_result = null;
 		
-		config = new ClientConfig();
-		client = ClientBuilder.newClient(config);
+		Response response = null;
 		String response_6 = null;
-		
-		String first_person_id = "1";
-		String last_person_id = "3";
 		
 		List<String> personList = new ArrayList<String>();
 		personList.add(first_person_id);
@@ -415,8 +400,7 @@ public class ClientApp {
 				for(String m : measure_types){
 					
 					// Request # 6: GET /person/person_id/measure_Type
-					webTarget = client.target(uri +"/").path(personList.get(i)+"/").path(m);
-					response = webTarget.request().accept(mediaType).get(Response.class);
+					response = service.path(path).path(personList.get(i)+"/").path(m).request().accept(mediaType).get(Response.class);
 					response_6 = response.readEntity(String.class);
 					
 					Element rootElement = getRootElement(response_6);
@@ -439,8 +423,7 @@ public class ClientApp {
 				for(String m : measure_types){
 					
 					// Request # 6: GET /person/person_id/measure_Type
-					webTarget = client.target(uri +"/").path(personList.get(i)+"/").path(m);
-					response = webTarget.request().accept(mediaType).get(Response.class);
+					response = service.path(path).path(personList.get(i)+"/").path(m).request().accept(mediaType).get(Response.class);
 					response_6 = response.readEntity(String.class);
 					
 					JSONArray arr = new JSONArray(response_6);
@@ -466,14 +449,11 @@ public class ClientApp {
 	 * If the response is 200, result is OK, else is ERROR.
 	 * @throws Exception
 	 */
-	public static void request_8() throws Exception{
+	public void request_8(WebTarget service, String mediaType) throws Exception{
 		String RESULT = "ERROR";
-		String uri = BASE_URI + "/person";
+		String path = "/person/" + first_person_id + "/" + measure_Type + "/" + measure_id;
 		
-		config = new ClientConfig();
-		client = ClientBuilder.newClient(config);
-		webTarget = client.target(uri + "/").path(first_person_id + "/").path(measure_Type + "/").path(measure_id);
-		response = webTarget.request().accept(mediaType).get(Response.class);
+		Response response = service.path(path).request().accept(mediaType).get(Response.class);
 		String response_7 = response.readEntity(String.class);
 		
 		if(mediaType == MediaType.APPLICATION_XML){
@@ -486,7 +466,7 @@ public class ClientApp {
 				RESULT = "OK";
 			}
 		}
-		templateRequest(8, "GET", "/person" + "/" + first_person_id + "/" + measure_Type + "/" + measure_id, response, RESULT, mediaType);
+		templateRequest(8, "GET", path, response, RESULT, mediaType);
 		System.out.println("Mid value: " + response_7);
 	} 
 	
@@ -501,22 +481,23 @@ public class ClientApp {
 	 * Remember, first with JSON and then with XML as content-types
 	 * @throws Exception
 	 */
-	public static void request_9() throws Exception{
+	public void request_9(WebTarget service, String mediaType) throws Exception{
 		String RESULT = "ERROR";
-		String uri = BASE_URI + "/person";
+		String path = "/person/" + first_person_id + "/" + measure_Type;
+		
 		String xml = "<measure>"+
 						"<value>72</value>" +
 						"<created>2011-12-09</created>" + 
 					 "</measure>";
 		
-		config = new ClientConfig();
-		client = ClientBuilder.newClient(config);
-		
-		webTarget = client.target(uri + "/").path(first_person_id + "/").path(measure_Type);
+		JSONObject obj = new JSONObject();
+		obj.put("value", "22");
+		obj.put("created", "2011-12-09");
 		
 		// Request # 6: GET /person/first_person_id/measure_Type
-		response = webTarget.request().accept(mediaType).get(Response.class);
-		String response_6 = response.readEntity(String.class);;
+		Response response = service.path(path).request().accept(mediaType).get(Response.class);
+		String response_6 = response.readEntity(String.class);
+		
 		int count_value;
 		int new_count_value;
 		
@@ -526,10 +507,10 @@ public class ClientApp {
 			count_value = listNode.getLength();
 			
 			// Request # 8: POST /person/first_person_id/measure_Type
-			response = webTarget.request().accept(mediaType).post(Entity.entity(xml, mediaType), Response.class); 
+			response = service.path(path).request().accept(mediaType).post(Entity.entity(xml, mediaType), Response.class); 
 			
 			// Request # 6: GET /person/first_person_id/measure_Type
-			response = webTarget.request().accept(mediaType).get(Response.class);
+			response = service.path(path).request().accept(mediaType).get(Response.class);
 			response_6 = prettyXMLPrint(response.readEntity(String.class));
 			rootElement = getRootElement(response_6);
 			listNode = rootElement.getChildNodes();
@@ -540,18 +521,14 @@ public class ClientApp {
 			}
 			
 		}else if (mediaType == MediaType.APPLICATION_JSON){
-			JSONObject obj = new JSONObject();
-			obj.put("value", "22");
-			obj.put("created", "2011-12-09");
-			
 			JSONArray arr = new JSONArray(response_6);
 			count_value = arr.length();
 			
 			// Request # 8: POST /person/first_person_id/measure_Type
-			response = webTarget.request().accept(mediaType).post(Entity.entity(obj.toString(), mediaType), Response.class); 
+			response = service.path(path).request().accept(mediaType).post(Entity.entity(obj.toString(), mediaType), Response.class); 
 			
 			// Request # 6: GET /person/first_person_id/measure_Type
-			response = webTarget.request().accept(mediaType).get(Response.class);
+			response = service.path(path).request().accept(mediaType).get(Response.class);
 			response_6 = response.readEntity(String.class);
 			arr = new JSONArray(response_6);
 			new_count_value = arr.length();
@@ -561,7 +538,7 @@ public class ClientApp {
 				RESULT = "OK";
 			}
 		}
-		templateRequest(9, "GET", "/person"+ "/" + first_person_id + "/" + measure_Type, response, RESULT, mediaType);
+		templateRequest(9, "GET", path, response, RESULT, mediaType);
 		System.out.println(response_6);
 	}
 	
@@ -572,30 +549,25 @@ public class ClientApp {
 	 * If it was, result is OK, else is ERROR.
 	 * @throws Exception
 	 */
-	public static void request_10() throws Exception{
+	public void request_10(WebTarget service, String mediaType) throws Exception{
 		String RESULT = "ERROR";
-		String uri = BASE_URI + "/person";
+		String path = "/person/" + first_person_id + "/" + measure_Type;
 		String xml = "<measure>"+
 						"<value>90</value>" +
 						"<created>2011-12-09</created>" + 
 					 "</measure>";
-	
+		
+		Response response = null;
 		String response_6 = null;
 		int status_put;
 		
-		config = new ClientConfig();
-		client = ClientBuilder.newClient(config);
-		
-		webTarget = client.target(uri+"/").path(first_person_id + "/").path(measure_Type + "/").path(measure_id);
-		
 		if(mediaType == MediaType.APPLICATION_XML){
 			// Request # 10: PUT /person/first_person_id/measure_Type/measure_id
-			response = webTarget.request().accept(mediaType).put(Entity.entity(xml, mediaType), Response.class);
+			response = service.path(path + "/").path(measure_id).request().accept(mediaType).put(Entity.entity(xml, mediaType), Response.class);
 			status_put = response.getStatus(); 
 			
 			// Request # 6: GET /person/first_person_id/measure_Type
-			webTarget = client.target(uri+"/").path(first_person_id + "/").path(measure_Type);
-			response = webTarget.request().accept(mediaType).get(Response.class);
+			response = service.path(path).request().accept(mediaType).get(Response.class);
 			
 			if(response.getStatus() == 200 && status_put == 201){
 				RESULT = "OK";
@@ -607,12 +579,11 @@ public class ClientApp {
 			measure.put("created", "2010-12-09");
 			
 			// Request # 10: PUT /person/first_person_id/measure_Type/measure_id
-			response = webTarget.request().accept(mediaType).put(Entity.entity(measure.toString(), mediaType), Response.class);
+			response = service.path(path + "/").path(measure_id).request().accept(mediaType).put(Entity.entity(measure.toString(), mediaType), Response.class);
 			status_put = response.getStatus(); 
 			
 			// Request # 6: GET /person/first_person_id/measure_Type
-			webTarget = client.target(uri+"/").path(first_person_id + "/").path(measure_Type);
-			response = webTarget.request().accept(mediaType).get(Response.class);
+			response = service.path(path).request().accept(mediaType).get(Response.class);
 			
 			if(response.getStatus() == 200 && status_put == 201){
 				RESULT = "OK";
@@ -621,7 +592,7 @@ public class ClientApp {
 				response_6 = arr.toString(4);
 			}
 		}
-		templateRequest(10, "GET", "/person/" + first_person_id + "/" + measure_Type, response, RESULT, mediaType);
+		templateRequest(10, "GET", path, response, RESULT, mediaType);
 		System.out.println(response_6);
 	}
 	
@@ -632,20 +603,17 @@ public class ClientApp {
 	 * If status is 200 and there is at least one measure in the body, result is OK, else is ERROR
 	 * @throws Exception
 	 */
-	public static void request_11() throws Exception{
+	public void request_11(WebTarget service, String mediaType) throws Exception{
 		String RESULT = "ERROR";
-		String uri = BASE_URI + "/person";
+		String path = "/person/" + first_person_id + "/" + measure_Type;
 		
 		String before = "2015-11-01";
 		String after = "2015-11-15";
 		
-		config = new ClientConfig();
-		client = ClientBuilder.newClient(config);
-		
 		// Request # 11: GET /person/first_person_id/measure_Type?before=2015-11-01&after=2015-11-15
-		webTarget = client.target(uri+"/").path(first_person_id + "/").path(measure_Type).queryParam("before", before).queryParam("after",after);
-		response = webTarget.request().accept(mediaType).get(Response.class);
+		Response response = service.path(path).queryParam("before", before).queryParam("after",after).request().accept(mediaType).get(Response.class);
 		String response_11 = response.readEntity(String.class);
+		
 		int count;
 		
 		if(mediaType == MediaType.APPLICATION_XML){
@@ -667,7 +635,7 @@ public class ClientApp {
 				RESULT = "OK";
 			}
 		}
-		templateRequest(11, "GET", "/person/" + first_person_id + "/" + measure_Type + "?" + "before=" + before + "&after=" + after, response, RESULT, mediaType);
+		templateRequest(11, "GET", path + "?" + "before=" + before + "&after=" + after, response, RESULT, mediaType);
 		System.out.println(response_11);
 	}
 	
@@ -677,20 +645,17 @@ public class ClientApp {
 	 * If status is 200 and there is at least one person in the body, result is OK, else is ERROR
 	 * @throws Exception
 	 */
-	public static void request_12() throws Exception{
+	public void request_12(WebTarget service, String mediaType) throws Exception{
 		String RESULT = "ERROR";
-		String uri = BASE_URI + "/person";
+		String path = "/person";
 		
 		Double max = 1.78;
 		Double min = 1.70;
 		
-		String measure_Type = "height";
-		
-		config = new ClientConfig();
-		client = ClientBuilder.newClient(config);
-		webTarget = client.target(uri).queryParam("measureType", measure_Type).queryParam("max", max).queryParam("min",min);
-		response = webTarget.request().accept(mediaType).get(Response.class);
+		// Request # 12: GET /person?measureType=measure_Type&before=2015-11-01&after=2015-11-15
+		Response response = service.path(path).queryParam("measureType", measure_Type).queryParam("max", max).queryParam("min",min).request().accept(mediaType).get(Response.class);
 		String response_12 = response.readEntity(String.class);
+		
 		int count;
 		
 		if(mediaType == MediaType.APPLICATION_XML){
@@ -710,7 +675,7 @@ public class ClientApp {
 				RESULT = "OK";
 			}
 		}
-		templateRequest(12, "GET", "/person" + "?measureType=" + measure_Type + "?max=" + max + "&min=" + min, response, RESULT, mediaType);
+		templateRequest(12, "GET", path + "?measureType=" + measure_Type + "?max=" + max + "&min=" + min, response, RESULT, mediaType);
 		System.out.println(prettyFormatPrint(response_12, mediaType));	
 	}
 	
@@ -722,7 +687,7 @@ public class ClientApp {
 	 * @throws SAXException
 	 * @throws IOException
 	 */
-	public static Element getRootElement(String xml)
+	public Element getRootElement(String xml)
 			throws ParserConfigurationException, SAXException, IOException {
 		DocumentBuilderFactory domFactory = DocumentBuilderFactory
 				.newInstance();
@@ -741,7 +706,7 @@ public class ClientApp {
 	 * @param result
 	 * @param mediaType
 	 */
-	public static void templateRequest(int numberRequest, String method, String url, Response response, String result, String mediaType){
+	public void templateRequest(int numberRequest, String method, String url, Response response, String result, String mediaType){
 		System.out.println("==================================================================================");
 		System.out.println("Request #" + numberRequest + ": "+ method + " " + url + " " + "Accept: " + mediaType + " " + "Content-Type: " + mediaType);
 		System.out.println("=> Result: " + result);
@@ -756,7 +721,7 @@ public class ClientApp {
 	 * @return
 	 * @throws TransformerException 
 	 */
-	public static String prettyXMLPrint(String xmlString) throws TransformerException {
+	public String prettyXMLPrint(String xmlString) throws TransformerException {
 		
 		Transformer transformer = TransformerFactory.newInstance().newTransformer();
 		transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
@@ -773,12 +738,12 @@ public class ClientApp {
 	}
 
 	
-	public static String prettyJSONPrint(String jsonString){
+	public String prettyJSONPrint(String jsonString){
 		JSONObject json = new JSONObject(jsonString); // Convert text to object
 		return json.toString(4); // Print it with specified indentation	
 	}
 	
-	public static String prettyFormatPrint(String responseString, String mediaType) throws Exception{
+	public String prettyFormatPrint(String responseString, String mediaType) throws Exception{
 		String result = null;
 		if(mediaType == "application/xml"){
 			result = prettyXMLPrint(responseString);
