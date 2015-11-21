@@ -11,7 +11,6 @@ import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlValue;
 
 import com.fasterxml.jackson.annotation.JsonValue;
@@ -142,6 +141,10 @@ public class MeasureDefinition implements Serializable {
 	    LifeCoachDao.instance.closeConnections(em);
 	}
 	
+	/**
+	 * This function return a list that contain all measureTypes
+	 * @return
+	 */
 	public static List<String> getMeasureTypes(){
 		EntityManager em = LifeCoachDao.instance.createEntityManager();
 		List <String> measureTypes = new ArrayList<String>();
@@ -152,6 +155,11 @@ public class MeasureDefinition implements Serializable {
 		return measureTypes;
 	}
 	
+	/**
+	 * This function return a measureDefinition given a name of the measure
+	 * @param measureName
+	 * @return
+	 */
 	public static MeasureDefinition getMeasureDefinition(String measureName){
 		EntityManager em = LifeCoachDao.instance.createEntityManager();
 		MeasureDefinition md = em.createNamedQuery("MeasureDefinition.findIdMeasureDef", MeasureDefinition.class)
