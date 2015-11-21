@@ -12,6 +12,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * Class wrapper for the people
+ * @author yuly
+ *
+ */
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name="people")
