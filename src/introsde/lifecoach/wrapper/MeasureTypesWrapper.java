@@ -8,7 +8,11 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-
+/**
+ * Class wrapper for the measureTypes
+ * @author yuly
+ *
+ */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name="measureTypes")
 public class MeasureTypesWrapper implements Serializable{
