@@ -233,10 +233,9 @@ public class PersonResource {
 			throws Exception {
 		System.out.println("--> REQUESTED: putMeasureType("+this.id+", "+measureType+", "+mid+", "+measureHistory.getValue()+")");
 		System.out.println();
-
-		//Calendar calendar = Calendar.getInstance();
-
+		
 		Response res;
+		//find measureHistory given a mid
 		HealthMeasureHistory existing = HealthMeasureHistory.getHealthMeasureHistoryById(mid);
 
 		if (existing == null) {
@@ -250,7 +249,7 @@ public class PersonResource {
 			if(measureHistory.getTimestamp() != null){
 				existing.setTimestamp(measureHistory.getTimestamp());
 			}
-			
+			//update a value of the measureHistory into db 
 			HealthMeasureHistory.updateHealthMeasureHistory(existing);
 		}
 		return res;
@@ -273,23 +272,30 @@ public class PersonResource {
 		System.out.println("--> REQUESTED: createNewMeasureType("+this.id+", "+measureType+")");
 		System.out.println();
 		
+		//find a measureDefinition given a measureType
 		MeasureDefinition measureDef = MeasureDefinition.getMeasureDefinition(measureType);
+		//found a person given a person id
 		Person person = Person.getPersonById(this.id);
 		System.out.println(measureType + " " + this.id);
 		
-		
+		//find a lifeStatus given a particular measureDefinition and a person 
 		LifeStatus ls = LifeStatus.getFilteredLifeStatus(measureDef, person);
 		if(ls != null){
 			LifeStatus.removeLifeStatus(ls);
 		}
 		
+		//create a new LifeStatus and set new values found
 		LifeStatus newLifeStatus = new LifeStatus(measureDef, measureHistory.getValue(), person);
 		System.out.println(newLifeStatus.toString());
+		//save a new LifeStatus into db
 		newLifeStatus = LifeStatus.saveLifeStatus(newLifeStatus);
 		
+		//set measureDefinition of the new MeasureHistory
 		measureHistory.setMeasureDefinition(measureDef);
+		//set person of the new MeasureHistory
 		measureHistory.setPerson(person);
 		System.out.println(measureHistory.toString());
+		//save a new measureHistory into db 
 		HealthMeasureHistory.saveHealthMeasureHistory(measureHistory);
 		
 		return LifeStatus.getLifeStatusById(newLifeStatus.getIdMeasure());
