@@ -64,9 +64,10 @@ public class ClientApp {
 		System.out.println("Server started on " + getBaseURI() + "\n[kill the process to exit]");
 		
 		int argCount = args.length;
-		String mediaType = MediaType.APPLICATION_JSON;
+		//String mediaType = MediaType.APPLICATION_JSON;
+		String mediaType = null;
 		
-		/*if(argCount == 0) {
+		if(argCount == 0) {
 			System.out.println("You must to choose a MediaType.");
 		} else {
 			String method = args[0];
@@ -76,7 +77,7 @@ public class ClientApp {
 			}else if (method.equals("JSON")) {
 				mediaType = MediaType.APPLICATION_JSON;
 			}
-		}*/
+		}
 		
 		ClientApp testClient = new ClientApp();
 
