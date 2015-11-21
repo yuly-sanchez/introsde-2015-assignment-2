@@ -1,11 +1,9 @@
 package introsde.lifecoach.model;
 
-import introsde.lifecoach.adapter.DateAdapter;
 import introsde.lifecoach.dao.LifeCoachDao;
 import introsde.lifecoach.model.Person;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -29,7 +27,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -92,8 +89,6 @@ public class HealthMeasureHistory implements Serializable {
 	@JoinColumn(name = "idMeasureDef", referencedColumnName = "idMeasureDef")
 	private MeasureDefinition measureDefinition;
 
-	// notice that we haven't included a reference to the history in Person
-	// this means that we don't have to make this attribute XmlTransient
 	@ManyToOne
 	@JoinColumn(name = "idPerson", referencedColumnName = "idPerson")
 	private Person person;
@@ -194,6 +189,12 @@ public class HealthMeasureHistory implements Serializable {
 	    LifeCoachDao.instance.closeConnections(em);
 	}
 	
+	/**
+	 * This function return the list of MeasureHistory given a person and a measureDefinition
+	 * @param person
+	 * @param measureDef
+	 * @return
+	 */
 	public static List<HealthMeasureHistory> getMeasureHistoryByMeasureType(Person person, MeasureDefinition measureDef){
 		EntityManager em = LifeCoachDao.instance.createEntityManager();
 		List<HealthMeasureHistory> measureHistories = em.createNamedQuery("HealthMeasureHistory.findByMeasureType", HealthMeasureHistory.class)
@@ -203,6 +204,12 @@ public class HealthMeasureHistory implements Serializable {
 		return measureHistories;
 	}
 	
+	/**
+	 * This function return a MeasureHistory given a person, a measureDefinition and a mid
+	 * @param person
+	 * @param measureDef
+	 * @return
+	 */
 	public static HealthMeasureHistory getMeasureHistoryByMid(Person person, MeasureDefinition measureDef, int mid){
 		EntityManager em = LifeCoachDao.instance.createEntityManager();
 		HealthMeasureHistory measureHistory = em.createNamedQuery("HealthMeasureHistory.findByMid", HealthMeasureHistory.class)
@@ -213,6 +220,14 @@ public class HealthMeasureHistory implements Serializable {
 		return measureHistory;
 	}
 	
+	/**
+	 * This function return a list of the MeasureHistory given a person, a measureDefinition, a before and after date
+	 * @param person
+	 * @param measureDef
+	 * @param beforeDate
+	 * @param afterDate
+	 * @return
+	 */
 	public static List<HealthMeasureHistory> getFilterByDatesHistory(Person person, MeasureDefinition measureDef, Calendar beforeDate, Calendar afterDate){
 		EntityManager em = LifeCoachDao.instance.createEntityManager();
 		List<HealthMeasureHistory> filteredHistory = null;
