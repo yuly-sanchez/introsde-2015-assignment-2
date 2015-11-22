@@ -53,10 +53,9 @@ public class PersonResource {
 
 	
 	/**
-	 * Request #2: GET/person/{id}
-	 * @param id
-	 * @return all the personal information plus current measures of person
-	 *         identified by {id}
+	 * Request #2: GET/person/{id} should give all the personal information plus current measures of person identified by {id} 
+	 * @param id 
+	 * @return the person associated to the {id}
 	 */
 	@GET
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -80,9 +79,9 @@ public class PersonResource {
 	}
 
 	/**
-	 * Request #3: PUT/person/{id}
+	 * Request #3: PUT/person/{id} should update the personal information of the person identified by {id} 
 	 * @param person
-	 * @return the personal information of the person identified by id updated
+	 * @return the response of the put operation 
 	 */
 	@PUT
 	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -99,7 +98,7 @@ public class PersonResource {
 			res = Response.noContent().build();
 		} else {
 			System.out.println("Update: Person with " + this.id + " found");
-			
+			//check the personal information of the person passed as input 
 			person.setIdPerson(this.id);
 			if(person.getName() == null){
 				person.setName(existing.getName());
@@ -112,7 +111,6 @@ public class PersonResource {
 			}
 			
 			person.setLifeStatus(existing.getLifeStatus());
-			//res = Response.created(uriInfo.getAbsolutePath()).build();
 			res = Response.ok().build();
 			Person.updatePerson(person);
 			
@@ -122,8 +120,7 @@ public class PersonResource {
 
 	
 	/**
-	 * Request #5: DELETE/person/{id}
-	 * delete the person identified by {id} from the database
+	 * Request #5: DELETE/person/{id} delete the person identified by {id} from the database
 	 */
 	@DELETE
 	public void deletePerson() {
@@ -142,11 +139,13 @@ public class PersonResource {
 	}
 	
 	/**
-	 * Request #6: GET/person/{id}/{measureType}
+	 * Request #6: GET/person/{id}/{measureType} 
+	 * should return the list of values (the history) of {measureType} for person identified by {id}
+	 * 
 	 * Request #11: GET/person/{id}/{measureType}?before={beforeDate}&after={afterDate}
-	 * @param idPerson
+	 * should return the history of {measureType} for person {id} in the specified range of date
 	 * @param measureType
-	 * @return the list of values the MeasureHistory of {measureType} for person identified by {idPerson}
+	 * @return the list of the MeasureHistory
 	 * @throws Exception 
 	 */
 	@GET
@@ -187,11 +186,11 @@ public class PersonResource {
 
 	
 	/**
-	 * Request #7: GET/person/{id}/{measureType}/{mid}
-	 * @param idPerson
+	 * Request #7: GET/person/{id}/{measureType}/{mid} 
+	 * should return the value of {measureType} identified by {mid} for person identified by {id}
 	 * @param measureType
 	 * @param mid
-	 * @return the value of {measureType} identified by {mid} for person identified by {idPerson}
+	 * @return a string representing the value of the HealthMeasureHistory identified by {mid}
 	 */
 	@GET
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -208,7 +207,6 @@ public class PersonResource {
 			measureHistory = HealthMeasureHistory.getMeasureHistoryByMid(p, md, mid);
 			value = measureHistory.getValue();
 		}catch(Exception ex){
-			System.out.println(ex.getMessage());
 			throw new RuntimeException("Get: Person with " + id + " with " + measureType + " with " + mid + " not found");
 		}
 		return value;
@@ -216,11 +214,11 @@ public class PersonResource {
 
 	
 	/**
-	 * Request #10: PUT/person/{id}/{measureType}/{id}
-	 * @param idPerson
+	 * Request #10: PUT/person/{id}/{measureType}/{id} 
+	 * should update the value for the {measureType} identified by {mid}, related to the person identified by {id}
 	 * @param measureType
-	 * @param mid
-	 * @param measureHistory
+	 * @param mid of the HealthMeasureHistory to update
+	 * @param measureHistory object
 	 * @return 
 	 * @throws Exception
 	 */
@@ -260,8 +258,8 @@ public class PersonResource {
 	 * should save a new value for the {measureType} (e.g. weight) of person identified by {id} and 
 	 * archive the old value in the history
 	 * @param measureType
-	 * @param measureHistory
-	 * @return
+	 * @param measureHistory object
+	 * @return the new LifeStatus
 	 */
 	@POST
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
@@ -272,30 +270,27 @@ public class PersonResource {
 		System.out.println("--> REQUESTED: createNewMeasureType("+this.id+", "+measureType+")");
 		System.out.println();
 		
-		//find a measureDefinition given a measureType
+		//find a measureDefinition associated with the name of the measure
 		MeasureDefinition measureDef = MeasureDefinition.getMeasureDefinition(measureType);
-		//found a person given a person id
+		//find a person identified by a id
 		Person person = Person.getPersonById(this.id);
 		System.out.println(measureType + " " + this.id);
 		
-		//find a lifeStatus given a particular measureDefinition and a person 
+		//remove current lifeStatus for a specified person and measureDefinition 
 		LifeStatus ls = LifeStatus.getFilteredLifeStatus(measureDef, person);
 		if(ls != null){
 			LifeStatus.removeLifeStatus(ls);
 		}
 		
-		//create a new LifeStatus and set new values found
+		//save new LifeStatus into db
 		LifeStatus newLifeStatus = new LifeStatus(measureDef, measureHistory.getValue(), person);
-		System.out.println(newLifeStatus.toString());
-		//save a new LifeStatus into db
 		newLifeStatus = LifeStatus.saveLifeStatus(newLifeStatus);
 		
-		//set measureDefinition of the new MeasureHistory
+		//set measureDefinition for measureName
 		measureHistory.setMeasureDefinition(measureDef);
 		//set person of the new MeasureHistory
 		measureHistory.setPerson(person);
-		System.out.println(measureHistory.toString());
-		//save a new measureHistory into db 
+		//archive a new measure value in the history and save into db 
 		HealthMeasureHistory.saveHealthMeasureHistory(measureHistory);
 		
 		return LifeStatus.getLifeStatusById(newLifeStatus.getIdMeasure());
