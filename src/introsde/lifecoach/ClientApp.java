@@ -39,21 +39,18 @@ import org.xml.sax.SAXException;
 
 public class ClientApp {
 
-	private String first_person_id;
-	private String last_person_id;
+	private String first_person_id = null;
+	private String last_person_id = null;
 
-	private String new_person_id;
-	private List<String> measure_types;
+	private String new_person_id = null;
+	private List<String> measure_types = null;
 
-	private String measure_id;
-	private String measure_Type;
+	private String measure_id = null;
+	private String measure_Type = null;
 	
 	public static void main(String args[]) throws Exception {
 		
-		
 		//String MY_SERVER = "http://127.0.1.1:5700/sdelab";
-		//BASE_URI = getBaseURI(MY_SERVER);
-		//String MY_SERVER = "https://desolate-castle-6772.herokuapp.com";
 		
 		//Configure client
 		ClientConfig clientConfig = new ClientConfig();
@@ -64,8 +61,8 @@ public class ClientApp {
 		System.out.println("Server started on " + getBaseURI() + "\n[kill the process to exit]");
 		
 		int argCount = args.length;
-		//String mediaType = MediaType.APPLICATION_JSON;
-		String mediaType = null;
+		String mediaType = MediaType.APPLICATION_XML;
+		//String mediaType = null;
 		
 		if(argCount == 0) {
 			System.out.println("You must to choose a MediaType.");
@@ -82,18 +79,18 @@ public class ClientApp {
 		ClientApp testClient = new ClientApp();
 
 		testClient.request_1(service, mediaType); 
-		testClient.request_2(service, mediaType); 
-		testClient.request_3(service, mediaType);
-		testClient.request_4(service, mediaType);
-		testClient.request_5(service, mediaType);
-		testClient.request_6(service, mediaType);
-		testClient.request_7(service, mediaType);
-		testClient.request_8(service, mediaType);
+		//testClient.request_2(service, mediaType); 
+		//testClient.request_3(service, mediaType);
+		//testClient.request_4(service, mediaType);
+		//testClient.request_5(service, mediaType);
+		//testClient.request_6(service, mediaType);
+		//testClient.request_7(service, mediaType);
+		//testClient.request_8(service, mediaType);
 		
-		testClient.request_9(service, mediaType);
-		testClient.request_10(service, mediaType);
-		testClient.request_11(service, mediaType);
-		testClient.request_12(service, mediaType);
+		//testClient.request_9(service, mediaType);
+		//testClient.request_10(service, mediaType);
+		//testClient.request_11(service, mediaType);
+		//testClient.request_12(service, mediaType);
 		
 	}
 
@@ -102,7 +99,8 @@ public class ClientApp {
      * @return
      */
 	private static URI getBaseURI() {
-		return UriBuilder.fromUri("https://desolate-castle-6772.herokuapp.com/sdelab").build();
+		//return UriBuilder.fromUri("https://desolate-castle-6772.herokuapp.com/sdelab").build();
+		return UriBuilder.fromUri("http://127.0.1.1:5700/sdelab").build();
 	}
 
 	/**
@@ -120,36 +118,34 @@ public class ClientApp {
 		
 		// Request # 1: GET /person
 		Response response = service.path(path).request().accept(mediaType).get(Response.class);
-		String response_1 = response.readEntity(String.class);
+		String response_1 = null;
 		
 		int countPeople;
 		
-		if(mediaType == MediaType.APPLICATION_XML){
-			Element rootElement = getRootElement(response_1);
-			NodeList listNode = rootElement.getChildNodes();
-			countPeople = listNode.getLength();
+		if(response.getStatus() == 200){
+			response_1 = response.readEntity(String.class);
 			
-			first_person_id = rootElement.getFirstChild().getChildNodes().item(0).getTextContent();
-			last_person_id = rootElement.getLastChild().getChildNodes().item(0).getTextContent();
+			if(mediaType == MediaType.APPLICATION_XML){
+				Element rootElement = getRootElement(response_1);
+				NodeList listNode = rootElement.getChildNodes();
+				countPeople = listNode.getLength();
+				if(countPeople > 2)
+					RESULT = "OK";
+				first_person_id = rootElement.getFirstChild().getChildNodes().item(0).getTextContent();
+				last_person_id = rootElement.getLastChild().getChildNodes().item(0).getTextContent();
 			
-			if(response.getStatus()==200 && countPeople>2){ 
-				RESULT = "OK";
+			}else if(mediaType == MediaType.APPLICATION_JSON){
+				JSONObject obj = new JSONObject(response_1);
+				JSONArray arr = obj.getJSONArray("people");
+				countPeople = arr.length();
+				if(countPeople > 2)
+					RESULT = "OK";
+				first_person_id = arr.getJSONObject(0).get("id").toString();
+				last_person_id = arr.getJSONObject(countPeople-1).get("id").toString();
 			}
-			
-		}else if(mediaType == MediaType.APPLICATION_JSON){
-			JSONObject obj = new JSONObject(response_1);
-			JSONArray arr = obj.getJSONArray("people");
-			countPeople = arr.length();
-			
-			first_person_id = arr.getJSONObject(0).get("id").toString();
-			last_person_id = arr.getJSONObject(countPeople-1).get("id").toString();
-			
-			if(response.getStatus()==200 && countPeople>2){ 
-				RESULT = "OK";
-			}
+			templateRequest(1, "GET", path, response, RESULT, mediaType);
+			System.out.println(prettyFormatPrint(response_1, mediaType));
 		}
-		templateRequest(1, "GET", path, response, RESULT, mediaType);
-		System.out.println(prettyFormatPrint(response_1, mediaType));
 	}
 
 	/**
@@ -164,14 +160,14 @@ public class ClientApp {
 		
 		// Request # 2: GET /person/first_person_id
 		Response response = service.path(path).request().accept(mediaType).get(Response.class);
-		String response_2 = response.readEntity(String.class);
+		String response_2 = null;
 		
-		if(mediaType == MediaType.APPLICATION_XML){
-			if(response.getStatus()==200 || response.getStatus()==202){
+		if(response.getStatus() == 200 || response.getStatus()==202){
+			response_2 = response.readEntity(String.class);
+			
+			if(mediaType == MediaType.APPLICATION_XML){
 				RESULT = "OK";
-			}
-		}else if(mediaType == MediaType.APPLICATION_JSON){
-			if(response.getStatus()==200 || response.getStatus()==202){
+			}else if(mediaType == MediaType.APPLICATION_JSON){
 				RESULT = "OK";
 			}
 		}
@@ -189,11 +185,11 @@ public class ClientApp {
 		String path = "/person/" + first_person_id;
 		
 		String xml = "<person>"+
-						"<firstname>AAA</firstname>" +
+						"<firstname>Carmen</firstname>" +
 					 "</person>";
 		
 		JSONObject obj = new JSONObject();
-		obj.put("firstname", "AAA");
+		obj.put("firstname", "Carmen");
 		
 		Response response = null;
 		
