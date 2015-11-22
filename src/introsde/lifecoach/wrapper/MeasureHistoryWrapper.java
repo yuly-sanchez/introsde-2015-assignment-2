@@ -13,7 +13,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
- * Class wrapper for the MeasureHistory
+ * Class wrapper used when are listened the MeasureHistory
  * @author yuly
  *
  */
