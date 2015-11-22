@@ -190,7 +190,7 @@ public class HealthMeasureHistory implements Serializable {
 	}
 	
 	/**
-	 * This function return the list of MeasureHistory given a person and a measureDefinition
+	 * Returns the list of MeasureHistory given a person and a measureDefinition
 	 * @param person
 	 * @param measureDef
 	 * @return
@@ -205,7 +205,7 @@ public class HealthMeasureHistory implements Serializable {
 	}
 	
 	/**
-	 * This function return a MeasureHistory given a person, a measureDefinition and a mid
+	 * Returns a MeasureHistory given a person, a measureDefinition and a mid
 	 * @param person
 	 * @param measureDef
 	 * @return
@@ -221,11 +221,11 @@ public class HealthMeasureHistory implements Serializable {
 	}
 	
 	/**
-	 * This function return a list of the MeasureHistory given a person, a measureDefinition, a before and after date
+	 * Returns the list of the MeasureHistory in a specified range of the date given a particular person
 	 * @param person
 	 * @param measureDef
-	 * @param beforeDate
-	 * @param afterDate
+	 * @param beforeDate representing the end date of the range
+	 * @param afterDate representing the start date of the range
 	 * @return
 	 */
 	public static List<HealthMeasureHistory> getFilterByDatesHistory(Person person, MeasureDefinition measureDef, Calendar beforeDate, Calendar afterDate){
