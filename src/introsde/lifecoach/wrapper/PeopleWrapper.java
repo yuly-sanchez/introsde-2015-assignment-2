@@ -13,7 +13,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * Class wrapper for the people
+ * Class wrapper used when are listened the person
  * @author yuly
  *
  */
