@@ -142,7 +142,7 @@ public class MeasureDefinition implements Serializable {
 	}
 	
 	/**
-	 * This function return a list that contain all measureTypes
+	 * Returns the list that contain all measureTypes
 	 * @return
 	 */
 	public static List<String> getMeasureTypes(){
@@ -156,7 +156,7 @@ public class MeasureDefinition implements Serializable {
 	}
 	
 	/**
-	 * This function return a measureDefinition given a name of the measure
+	 * Returns a measureDefinition given a measure name
 	 * @param measureName
 	 * @return
 	 */
