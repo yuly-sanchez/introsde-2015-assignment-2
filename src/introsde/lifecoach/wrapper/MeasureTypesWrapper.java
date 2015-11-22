@@ -9,7 +9,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * Class wrapper for the measureTypes
+ * Class wrapper used when are listened the measureTypes
  * @author yuly
  *
  */
