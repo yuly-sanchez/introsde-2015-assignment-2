@@ -169,7 +169,7 @@ public class LifeStatus implements Serializable {
 	}
 	
 	/**
-	 * This function return a lifeStatus given a measureDefinition and a person
+	 * Returns a LifeStatus given a specific measureDefinition and person
 	 * @param measureDef
 	 * @param person
 	 * @return
