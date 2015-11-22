@@ -26,8 +26,8 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
 
 
-@Stateless // will work only inside a Java EE application
-@LocalBean // will work only inside a Java EE application
+@Stateless 
+@LocalBean 
 @Path("/person")
 public class PersonCollectionResource {
 
@@ -46,9 +46,12 @@ public class PersonCollectionResource {
 
 	/**
 	 * Request #1: GET/person
-	 * @return list all person into DB
+	 * Returns the list all people into DB
+	 * 
 	 * Request #12: GET/person?measureType={measureType}&max={max}&min={min}
-	 * @return list all person into DB
+	 * Retrieves people whose {measureType} value is in the [{min},{max}] range 
+	 * 
+	 * @return list of the people
 	 */
 	@GET
 	@Produces({ MediaType.TEXT_PLAIN, MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
@@ -79,7 +82,10 @@ public class PersonCollectionResource {
 }
 	 
 
-	// retuns the number of people
+	/**
+	 * Returns the number of people saved into db
+	 * @return a string representing the number of the people
+	 */
 	@GET
 	@Path("count")
 	@Produces(MediaType.TEXT_PLAIN)
@@ -91,11 +97,11 @@ public class PersonCollectionResource {
 	}
 
 	/**
-	 * Request #4: POST/person
+	 * Request #4: POST/person 
+	 * should create a new person and return the newly created person with its assigned id and 
+	 * if a healthprofile is included, create also those measurements for the new person
 	 * @param person
-	 * @return the newly created person with its assigned id and if a
-	 *         healthprofile is included, create also those measurements for the
-	 *         new person
+	 * @return the person saved in the database 
 	 * @throws IOException
 	 */
 	@POST
@@ -105,6 +111,7 @@ public class PersonCollectionResource {
 		
 		System.out.println("--> REQUESTED: createNewPerson(" + person.toString() + ")");
 
+		//checks if person include the tag HealthProfile (called LifeStatus) 
 		if (person.getLifeStatus() == null) {
 			System.out.println("--> Creating new person without LifeStatus...");
 			return Person.savePerson(person);
@@ -112,29 +119,29 @@ public class PersonCollectionResource {
 		} else {
 			System.out.println("--> Creating new person with LifeStatus...");
 
-			//store the new lifestatus of the person created in a new list 
+			//store the new lifestatus of the person passed as input in the another variable 
 			List<LifeStatus> personLifeStatus = new ArrayList<LifeStatus>();
 			personLifeStatus.addAll(person.getLifeStatus());
 		
-			//cancel lifeStatus of the person 
+			//remove the lifeStatus in the person passed as input
 			person.setLifeStatus(null);
 			
-			//save of the person to obtain a person id
+			//save the person into db and retrieve the id
 			Person p = Person.savePerson(person);
 			int personId = p.getIdPerson();
 			
-			// check the list of the lifeStatus saved
+			// checks the list of the lifeStatus saved
 			for (int i=0;i<personLifeStatus.size();i++) {
 				
-				//obtain one lifeStatus of the list
+				//obtain a lifeStatus of the list
 				LifeStatus lifeS = personLifeStatus.get(i);
 				
-				// set measureDefiniton of the one lifeStatus
+				// find the measureDefinition associated with the name of the measure
 				MeasureDefinition md = MeasureDefinition.getMeasureDefinition(lifeS.getMeasureDefinition().getMeasureName());
 				lifeS.setMeasureDefinition(md);
 				//System.out.println("--> lifeSNewPerson-Measure: " + lifeS.getMeasureDefinition());
 
-				// set person of the one lifeStatus 
+				// associated the lifeStatus with the person
 				lifeS.setPerson(p);
 				
 				//save lifeStatus into db
@@ -142,17 +149,13 @@ public class PersonCollectionResource {
 				
 				Calendar calendar = Calendar.getInstance();
 				
+				// archive the new value of the lifeStatus also in the history
 				HealthMeasureHistory hm = new HealthMeasureHistory();
-				//set measureDefinition of the new measure
 				hm.setMeasureDefinition(md);
-				//set person of the of the new measure
 				hm.setPerson(p);
-				//set created date of the new measure
 				hm.setTimestamp(calendar.getTime());
-				//set value of the new measure
 				hm.setValue(lifeS.getValue());
-				
-				//save a lifeStatus (new measure) into table of the MeasureHistory db 
+				//save a new measure into db 
 				HealthMeasureHistory.saveHealthMeasureHistory(hm);
 			}
 			
@@ -160,10 +163,14 @@ public class PersonCollectionResource {
 		}
 	}
 
-	// Defines that the next path parameter after the base url is
-	// treated as a parameter and passed to the PersonResources
-	// Allows to type http://localhost:599/base_url/1
-	// 1 will be treaded as parameter todo and passed to PersonResource
+	/**
+	 * Defines that the next path parameter after the base url is treated as a parameter and 
+	 * passed to the PersonResources 
+	 * Allows to type http://localhost:599/base_url/1 
+	 * 1 will be treaded as parameter todo and passed to PersonResource
+	 * @param id
+	 * @return
+	 */
 	@Path("{personId}")
 	public PersonResource getPerson(@PathParam("personId") int id) {
 		return new PersonResource(uriInfo, request, id);
