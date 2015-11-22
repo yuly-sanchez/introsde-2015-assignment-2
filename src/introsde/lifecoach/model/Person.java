@@ -23,9 +23,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 		
 		@NamedQuery(name = "Person.findValuesOfRange", 
 					query = "SELECT p FROM Person p INNER JOIN p.lifeStatus l "
-							+ "WHERE l.measureDefinition= ?1 AND CAST(l.value NUMERIC(10,2)) BETWEEN ?2 AND ?3"),
+							+ "WHERE l.measureDefinition= ?1 AND CAST(l.value NUMERIC(10,2)) BETWEEN ?2 AND ?3")
 		
-		@NamedQuery(name = "Person.findLifeStatus", query="SELECT p FROM Person p INNER JOIN  p.lifeStatus l WHERE l.person= ?1 AND l.measureDefinition= ?2")			
+		//@NamedQuery(name = "Person.findLifeStatus", query="SELECT p FROM Person p INNER JOIN  p.lifeStatus l WHERE l.person= ?1 AND l.measureDefinition= ?2")			
 		
 })
 @XmlAccessorType(XmlAccessType.NONE)
@@ -185,6 +185,13 @@ public class Person implements Serializable {
 		LifeCoachDao.instance.closeConnections(em);
 	}
 
+	/**
+	 * Returns the list of people whose measure contained in the range [min,max]
+	 * @param measureDef
+	 * @param min
+	 * @param max
+	 * @return
+	 */
 	public static List<Person> getFilteredPersonByValuesOfRange(MeasureDefinition measureDef, Double min, Double max) {
 		EntityManager em = LifeCoachDao.instance.createEntityManager();
 		List<Person> people = em.createNamedQuery("Person.findValuesOfRange", Person.class)
@@ -198,6 +205,12 @@ public class Person implements Serializable {
 		return people;
 	}
 	
+	/**
+	 * Returns 
+	 * @param person
+	 * @param measureDef
+	 * @return
+	 *//*
 	public static Person getFilteredPersonSaveNewValueMeasure(Person person, MeasureDefinition measureDef){
 		EntityManager em = LifeCoachDao.instance.createEntityManager();
 		Person p = em.createNamedQuery("Person.findLifeStatus", Person.class)
@@ -206,5 +219,5 @@ public class Person implements Serializable {
 		System.out.println(p.toString());
 		LifeCoachDao.instance.closeConnections(em);
 		return p;
-	}
+	}*/
 }
