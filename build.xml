@@ -131,7 +131,7 @@
 	<target name="execute.client.myServer.json">
 		<record name="client-server-json.log" action="start" append="no"/>
 		<echo message="'execute.client.myServer.json' target has been called"/>
-		<java classname="introsde.lifecoach.ClientApp" classpath="${build.dir}" fork="true">
+		<java classname="introsde.lifecoach.client.ClientApp" classpath="${build.dir}" fork="true">
 			<arg value="JSON"/>
 			<classpath>
 				<path location="build" />
@@ -148,7 +148,7 @@
 	<target name="execute.client.myServer.xml">
 			<record name="client-server-xml.log" action="start" append="no"/>
 			<echo message="'execute.client.myServer.xml' target has been called"/>
-			<java classname="introsde.lifecoach.ClientApp" classpath="${build.dir}" fork="true">
+			<java classname="introsde.lifecoach.client.ClientApp" classpath="${build.dir}" fork="true">
 				<arg value="XML"/>
 				<classpath>
 					<path location="build" />
