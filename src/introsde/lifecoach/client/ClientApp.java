@@ -1,4 +1,4 @@
-package introsde.lifecoach;
+package introsde.lifecoach.client;
 
 
 import java.io.IOException;
@@ -50,6 +50,7 @@ public class ClientApp {
 	
 	public static void main(String args[]) throws Exception {
 		
+		//my server local
 		//String MY_SERVER = "http://127.0.1.1:5700/sdelab";
 		
 		//Configure client
@@ -61,12 +62,12 @@ public class ClientApp {
 		System.out.println("Server started on " + getBaseURI() + "\n[kill the process to exit]");
 		
 		int argCount = args.length;
-		String mediaType = MediaType.APPLICATION_XML;
-		//String mediaType = null;
+		String mediaType = null;
 		
-		if(argCount == 0) {
-			System.out.println("You must to choose a MediaType.");
+		if(argCount < 1) {
+			System.out.println("Error: You must to insert a media type.");
 		} else {
+			// Sets the media type either XML or JSON
 			String method = args[0];
 			
 			if(method.equals("XML")) {
@@ -75,32 +76,38 @@ public class ClientApp {
 				mediaType = MediaType.APPLICATION_JSON;
 			}
 		}
+		System.out.println("MediaType: " + mediaType);
 		
-		ClientApp testClient = new ClientApp();
+		try{
+			
+			ClientApp testClient = new ClientApp();
 
-		testClient.request_1(service, mediaType); 
-		//testClient.request_2(service, mediaType); 
-		//testClient.request_3(service, mediaType);
-		//testClient.request_4(service, mediaType);
-		//testClient.request_5(service, mediaType);
-		//testClient.request_6(service, mediaType);
-		//testClient.request_7(service, mediaType);
-		//testClient.request_8(service, mediaType);
-		
-		//testClient.request_9(service, mediaType);
-		//testClient.request_10(service, mediaType);
-		//testClient.request_11(service, mediaType);
-		//testClient.request_12(service, mediaType);
-		
+			testClient.request_1(service, mediaType); 
+			testClient.request_2(service, mediaType); 
+			testClient.request_3(service, mediaType);
+			testClient.request_4(service, mediaType);
+			testClient.request_5(service, mediaType);
+			testClient.request_6(service, mediaType);
+			testClient.request_7(service, mediaType);
+			testClient.request_8(service, mediaType);
+			
+			testClient.request_9(service, mediaType);
+			testClient.request_10(service, mediaType);
+			testClient.request_11(service, mediaType);
+			testClient.request_12(service, mediaType);
+
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}			
 	}
 
 	/**
-     * Get base uri of service
+     * Get base uri of my server that should be deployed on Heroku
      * @return
      */
 	private static URI getBaseURI() {
-		//return UriBuilder.fromUri("https://desolate-castle-6772.herokuapp.com/sdelab").build();
-		return UriBuilder.fromUri("http://127.0.1.1:5700/sdelab").build();
+		return UriBuilder.fromUri("https://desolate-castle-6772.herokuapp.com/sdelab").build();
+		//return UriBuilder.fromUri("http://127.0.1.1:5700/sdelab").build();
 	}
 
 	/**
@@ -184,27 +191,22 @@ public class ClientApp {
 		String RESULT = "ERROR";
 		String path = "/person/" + first_person_id;
 		
-		String xml = "<person>"+
-						"<firstname>Carmen</firstname>" +
-					 "</person>";
-		
-		JSONObject obj = new JSONObject();
-		obj.put("firstname", "Carmen");
-		
-		Response response = null;
+		String input = null;
 		
 		if(mediaType == MediaType.APPLICATION_XML){
-			// Request # 3: PUT /person/first_person_id
-			response = service.path(path).request().accept(mediaType).put(Entity.entity(xml, mediaType), Response.class);
-			if(response.getStatus() == 200 || response.getStatus() == 201){
-				RESULT = "OK";
-			}
+			input = "<person>"+
+							"<firstname>Felipe</firstname>" +
+					"</person>";	
 		}else if(mediaType == MediaType.APPLICATION_JSON){
-			// Request # 3: PUT /person/first_person_id
-			response = service.path(path).request().accept(mediaType).put(Entity.entity(obj.toString(), mediaType), Response.class);
-			if(response.getStatus() == 200 || response.getStatus() == 201){
-				RESULT = "OK";
-			}
+			JSONObject obj = new JSONObject();
+			obj.put("firstname", "Felipe");
+			input = obj.toString();
+		}
+		
+		// Request # 3: PUT /person/first_person_id
+		Response response = service.path(path).request().accept(mediaType).put(Entity.entity(input, mediaType), Response.class);
+		if(response.getStatus() == 200 || response.getStatus() == 201){
+			RESULT = "OK";
 		}
 		templateRequest(3, "PUT", path, response, RESULT, mediaType);
 		System.out.println(response.getStatusInfo());	
@@ -222,65 +224,65 @@ public class ClientApp {
 		String RESULT = "ERROR";
 		String path = "/person";
 		
-		String xml = "<person>"+
-						"<firstname>Chuck</firstname>" +
-						"<lastname>Norris</lastname>" +
-						"<birthdate>1945-01-01</birthdate>" +
-					    "<healthProfile>" +
-					        "<measureType>" +
-					         	"<measure>weight</measure>" +   
-					         	"<value>78.9</value>" +
-					        "</measureType>" +
-					        "<measureType>" +
-					        	"<measure>height</measure>" +  
-					        	"<value>1.73</value>" +
-					        "</measureType>" +
-					    "</healthProfile>" +
-					 "</person>";
-		
-		JSONObject obj = new JSONObject();
-		obj.put("firstname", "Pinco");
-		obj.put("lastname", "Pallino");
-		obj.put("birthdate", "1945-01-01");
-		
-    	/*JSONObject jsonMeasure1 = new JSONObject();
-    	jsonMeasure1.put("measure", "weight");
-    	jsonMeasure1.put("value", "78.9");
-    	
-    	JSONObject jsonMeasure2 = new JSONObject();
-    	jsonMeasure2.put("measure", "height");
-    	jsonMeasure2.put("value", "172.0");*/
+		String input = null;
 
-    	JSONArray healthProfile = new JSONArray();
-    	obj.put("healthProfile", healthProfile);
-
-		
 		Response response = null;
 		String response_4 = null;
 		
 		if(mediaType == MediaType.APPLICATION_XML){
+			input = "<person>"+
+						"<firstname>Chuck</firstname>" +
+						"<lastname>Norris</lastname>" +
+						"<birthdate>1945-01-01</birthdate>" +
+						"<healthProfile>" +
+				        	"<measureType>" +
+				         		"<measure>weight</measure>" +   
+				         		"<value>78.9</value>" +
+				         		"</measureType>" +
+				         		"<measureType>" +
+				         			"<measure>height</measure>" +  
+				         			"<value>1.73</value>" +
+				         		"</measureType>" +
+				         "</healthProfile>" +
+				   "</person>";
 			
 			// Request # 4: POST /person
-			response = service.path(path).request().accept(mediaType).post(Entity.entity(xml, mediaType), Response.class);
+			response = service.path(path).request().accept(mediaType).post(Entity.entity(input, mediaType), Response.class);
 			response_4 = response.readEntity(String.class);
 			
 			Element rootElement = getRootElement(response_4);
 			new_person_id = rootElement.getFirstChild().getChildNodes().item(0).getTextContent();
 			
-			if(response.getStatus()==200 || response.getStatus()==201 || response.getStatus()==202){ 
+			if(response.getStatus()>=200 && response.getStatus()<=202){ 
 				RESULT = "OK";
 			}
 			
-		}else if(mediaType == MediaType.APPLICATION_JSON){
-						
+		}else if(mediaType == MediaType.APPLICATION_JSON){	
+			JSONObject obj = new JSONObject();
+			obj.put("firstname", "Pinco");
+			obj.put("lastname", "Pallino");
+			obj.put("birthdate", "1945-01-01");
+			
+	    	/*JSONObject jsonMeasure1 = new JSONObject();
+	    	jsonMeasure1.put("measure", "weight");
+	    	jsonMeasure1.put("value", "78.9");
+	    	
+	    	JSONObject jsonMeasure2 = new JSONObject();
+	    	jsonMeasure2.put("measure", "height");
+	    	jsonMeasure2.put("value", "172.0");*/
+
+			//JSONArray healthProfile = new JSONArray();
+	    	//obj.put("healthProfile", healthProfile);
+			
+			input = obj.toString();
 			// Request # 4: POST /person
-			response = service.path(path).request().accept(mediaType).post(Entity.entity(obj.toString(), mediaType), Response.class);
+			response = service.path(path).request().accept(mediaType).post(Entity.entity(input, mediaType), Response.class);
 			response_4 = response.readEntity(String.class);
 			
 			JSONObject obj_id = new JSONObject(response_4);
 			new_person_id =  obj_id.get("id").toString();
 			
-			if(response.getStatus()==200 || response.getStatus()==201 || response.getStatus()==202){ 
+			if(response.getStatus()>=200 && response.getStatus()<=202){ 
 				RESULT = "OK";
 			}
 		}
@@ -302,20 +304,12 @@ public class ClientApp {
 		// Request # 5: DELETE /person/new_person_id
 		Response response = service.path(path).request().accept(mediaType).delete();
 		
-		if(mediaType == MediaType.APPLICATION_XML){
-			// Request # 2: GET /person/new_person_id
-			response = service.path(path).request().accept(mediaType).get(Response.class);
-			if(response.getStatus() == 404){
-				RESULT = "OK";
-			}
-		}else if(mediaType == MediaType.APPLICATION_JSON){
-			// Request # 2: GET /person/new_person_id
-			response = service.path(path).request().accept(mediaType).get(Response.class);
-			if(response.getStatus() == 404){
-				RESULT = "OK";
-			}
+		// Request # 2: GET /person/new_person_id
+		response = service.path(path).request().accept(mediaType).get(Response.class);
+		if(response.getStatus() == 404){
+			RESULT = "OK";
 		}
-		templateRequest(5, "DELETE", path + new_person_id, response, RESULT, mediaType);
+		templateRequest(5, "DELETE", path, response, RESULT, mediaType);
 		System.out.println("Person with the id " + new_person_id + " is deleted");
 	}
 	
@@ -338,34 +332,37 @@ public class ClientApp {
 		int countMeasureType;
 		measure_types = new ArrayList<String>();
 		
-		if(mediaType == MediaType.APPLICATION_XML){
-			Element rootElement = getRootElement(response_9);
-			NodeList listNode = rootElement.getChildNodes();
-			countMeasureType = listNode.getLength();
+		if(response.getStatus() == 200){
 			
-			for(int i=0; i<countMeasureType; i++){
-				Node nNode = listNode.item(i);
-				String measureType = nNode.getFirstChild().getTextContent();
-				measure_types.add(measureType);
-			}
-			if(response.getStatus() == 200 && countMeasureType>2){
-				RESULT = "OK";
-			}
-			
-		}else if(mediaType == MediaType.APPLICATION_JSON){
-			JSONObject obj = new JSONObject(response_9);
-			JSONArray arr = obj.getJSONArray("measureType");
-			countMeasureType = arr.length();
-			
-			for(int i=0;i<countMeasureType;i++){
-				String measureType = arr.get(i).toString();
-				measure_types.add(measureType);
-			}
-			if(response.getStatus() == 200 && countMeasureType>2){
-				RESULT = "OK";
+			if(mediaType == MediaType.APPLICATION_XML){
+				Element rootElement = getRootElement(response_9);
+				NodeList listNode = rootElement.getChildNodes();
+				countMeasureType = listNode.getLength();
+				
+				for(int i=0; i<countMeasureType; i++){
+					Node nNode = listNode.item(i);
+					String measureType = nNode.getFirstChild().getTextContent();
+					measure_types.add(measureType);
+				}
+				if(countMeasureType>2){
+					RESULT = "OK";
+				}
+				
+			}else if(mediaType == MediaType.APPLICATION_JSON){
+				JSONObject obj = new JSONObject(response_9);
+				JSONArray arr = obj.getJSONArray("measureType");
+				countMeasureType = arr.length();
+				
+				for(int i=0;i<countMeasureType;i++){
+					String measureType = arr.get(i).toString();
+					measure_types.add(measureType);
+				}
+				if(countMeasureType>2){
+					RESULT = "OK";
+				}
 			}
 		}
-		templateRequest(6, "GET", path, response, RESULT, mediaType);
+		templateRequest(9, "GET", path, response, RESULT, mediaType);
 		System.out.println(prettyFormatPrint(response_9, mediaType));	
 	}
 
@@ -392,14 +389,14 @@ public class ClientApp {
 		personList.add(first_person_id);
 		personList.add(last_person_id);
 		
-		if(mediaType == MediaType.APPLICATION_XML){
-			for(int i=0; i<personList.size();i++){
-				for(String m : measure_types){
-					
-					// Request # 6: GET /person/person_id/measure_Type
-					response = service.path(path).path(personList.get(i)+"/").path(m).request().accept(mediaType).get(Response.class);
-					response_6 = response.readEntity(String.class);
-					
+		for(int i=0; i<personList.size();i++){
+			for(String m : measure_types){
+				
+				// Request # 6: GET /person/person_id/measure_Type
+				response = service.path(path).path(personList.get(i)+"/").path(m).request().accept(mediaType).get(Response.class);
+				response_6 = response.readEntity(String.class);
+				
+				if(mediaType == MediaType.APPLICATION_XML){
 					Element rootElement = getRootElement(response_6);
 					NodeList listNode = rootElement.getChildNodes();
 					
@@ -408,35 +405,22 @@ public class ClientApp {
 						person_id = personList.get(i);
 						measure_Type = m;
 						measure_id = rootElement.getFirstChild().getFirstChild().getTextContent();
-					}	
-				}
-			}
-			if(response.getStatus()==200){
-				RESULT = "OK";
-			}
-			
-		}else if(mediaType == MediaType.APPLICATION_JSON){
-			for(int i=0;i<personList.size();i++){
-				for(String m : measure_types){
-					
-					// Request # 6: GET /person/person_id/measure_Type
-					response = service.path(path).path(personList.get(i)+"/").path(m).request().accept(mediaType).get(Response.class);
-					response_6 = response.readEntity(String.class);
-					
+						RESULT = "OK";
+					}
+				}else if(mediaType == MediaType.APPLICATION_JSON){
 					JSONArray arr = new JSONArray(response_6);
+					
 					if(arr.length() >0){
 						response_result = arr.toString(4);
 						person_id = personList.get(i);
 						measure_Type = m;
 						measure_id = arr.getJSONObject(i).get("mid").toString();
+						RESULT = "OK";
 					}
-				}
-			}
-			if(response.getStatus()==200){
-				RESULT = "OK";
+				}	
 			}
 		}
-		templateRequest(7, "GET", "/person"+ "/" + person_id + "/" + measure_Type, response, RESULT, mediaType);
+		templateRequest(6, "GET", "/person"+ "/" + person_id + "/" + measure_Type, response, RESULT, mediaType);
 		System.out.println(response_result);
 	}
 	
@@ -451,19 +435,11 @@ public class ClientApp {
 		String path = "/person/" + first_person_id + "/" + measure_Type + "/" + measure_id;
 		
 		Response response = service.path(path).request().accept(mediaType).get(Response.class);
-		String response_7 = response.readEntity(String.class);
-		
-		if(mediaType == MediaType.APPLICATION_XML){
-			if(response.getStatus() == 200){
-				RESULT = "OK";
-			}
-			
-		}else if(mediaType == MediaType.APPLICATION_JSON){
-			if(response.getStatus() == 200){
-				RESULT = "OK";
-			}
+		if(response.getStatus() == 200){
+			RESULT = "OK";
 		}
-		templateRequest(8, "GET", path, response, RESULT, mediaType);
+		String response_7 = response.readEntity(String.class);
+		templateRequest(7, "GET", path, response, RESULT, mediaType);
 		System.out.println("Mid value: " + response_7);
 	} 
 	
@@ -482,61 +458,68 @@ public class ClientApp {
 		String RESULT = "ERROR";
 		String path = "/person/" + first_person_id + "/" + measure_Type;
 		
-		String xml = "<measure>"+
-						"<value>72</value>" +
-						"<created>2011-12-09</created>" + 
-					 "</measure>";
-		
-		JSONObject obj = new JSONObject();
-		obj.put("value", "22");
-		obj.put("created", "2011-12-09");
+		String input = null;
 		
 		// Request # 6: GET /person/first_person_id/measure_Type
-		Response response = service.path(path).request().accept(mediaType).get(Response.class);
-		String response_6 = response.readEntity(String.class);
+		Response responseGet = service.path(path).request().accept(mediaType).get(Response.class);
+		String response_6 = responseGet.readEntity(String.class);
+		
+		Response responsePost = null;
+		String response_8 = null;
 		
 		int count_value;
 		int new_count_value;
 		
 		if(mediaType == MediaType.APPLICATION_XML){
+			input = "<measure>"+
+						"<value>72</value>" +
+						"<created>2011-12-09</created>" + 
+					"</measure>";
+			
 			Element rootElement = getRootElement(response_6);
 			NodeList listNode = rootElement.getChildNodes();
 			count_value = listNode.getLength();
 			
 			// Request # 8: POST /person/first_person_id/measure_Type
-			response = service.path(path).request().accept(mediaType).post(Entity.entity(xml, mediaType), Response.class); 
+			responsePost = service.path(path).request().accept(mediaType).post(Entity.entity(input, mediaType), Response.class); 
 			
 			// Request # 6: GET /person/first_person_id/measure_Type
-			response = service.path(path).request().accept(mediaType).get(Response.class);
-			response_6 = prettyXMLPrint(response.readEntity(String.class));
-			rootElement = getRootElement(response_6);
+			responseGet = service.path(path).request().accept(mediaType).get(Response.class);
+			rootElement = getRootElement(responseGet.readEntity(String.class));
 			listNode = rootElement.getChildNodes();
 			new_count_value = listNode.getLength();
 			
-			if(response.getStatus() == 200 && new_count_value>count_value){
+			if(new_count_value > count_value){
 				RESULT = "OK";
 			}
 			
 		}else if (mediaType == MediaType.APPLICATION_JSON){
+			JSONObject obj = new JSONObject();
+			obj.put("value", "72");
+			obj.put("created", "2011-12-09");
+			input = obj.toString();
+			
 			JSONArray arr = new JSONArray(response_6);
 			count_value = arr.length();
 			
 			// Request # 8: POST /person/first_person_id/measure_Type
-			response = service.path(path).request().accept(mediaType).post(Entity.entity(obj.toString(), mediaType), Response.class); 
+			responsePost = service.path(path).request().accept(mediaType).post(Entity.entity(input, mediaType), Response.class); 
 			
 			// Request # 6: GET /person/first_person_id/measure_Type
-			response = service.path(path).request().accept(mediaType).get(Response.class);
-			response_6 = response.readEntity(String.class);
-			arr = new JSONArray(response_6);
+			responseGet = service.path(path).request().accept(mediaType).get(Response.class);
+			arr = new JSONArray(responseGet.readEntity(String.class));
 			new_count_value = arr.length();
-			response_6 = arr.toString(4);
 			
-			if(response.getStatus() == 200 && new_count_value>count_value){
+			if(new_count_value > count_value){
 				RESULT = "OK";
 			}
 		}
-		templateRequest(9, "GET", path, response, RESULT, mediaType);
-		System.out.println(response_6);
+		
+		if(responsePost.getStatus() == 200){
+			response_8 = responsePost.readEntity(String.class);
+		}
+		templateRequest(8, "POST", path, responsePost, RESULT, mediaType);
+		System.out.println(prettyFormatPrint(response_8, mediaType));
 	}
 	
 	/**
@@ -548,49 +531,60 @@ public class ClientApp {
 	 */
 	public void request_10(WebTarget service, String mediaType) throws Exception{
 		String RESULT = "ERROR";
-		String path = "/person/" + first_person_id + "/" + measure_Type;
-		String xml = "<measure>"+
-						"<value>90</value>" +
-						"<created>2011-12-09</created>" + 
-					 "</measure>";
+		String path = "/person/" + first_person_id + "/" + measure_Type + "/" + measure_id;
 		
-		Response response = null;
-		String response_6 = null;
-		int status_put;
+		Response responsePut = null;
+		Response responseGet = null;
+		
+		String input = null;
+		
+		String oldValue = null;
+		String newValue = null;
 		
 		if(mediaType == MediaType.APPLICATION_XML){
+			input = "<measure>"+
+						"<value>90</value>" +
+						"<created>2011-12-09</created>" + 
+					"</measure>";
+			
+			// Request # 7: GET /person/first_person_id/measure_Type/measure_id
+			responseGet = service.path(path).request().accept(mediaType).get(Response.class);
+			oldValue = responseGet.readEntity(String.class);
+			
 			// Request # 10: PUT /person/first_person_id/measure_Type/measure_id
-			response = service.path(path + "/").path(measure_id).request().accept(mediaType).put(Entity.entity(xml, mediaType), Response.class);
-			status_put = response.getStatus(); 
+			responsePut = service.path(path).request().accept(mediaType).put(Entity.entity(input, mediaType), Response.class);
 			
-			// Request # 6: GET /person/first_person_id/measure_Type
-			response = service.path(path).request().accept(mediaType).get(Response.class);
+			// Request # 7: GET /person/first_person_id/measure_Type/measure_id
+			responseGet = service.path(path).request().accept(mediaType).get(Response.class);
 			
-			if(response.getStatus() == 200 && status_put == 201){
-				RESULT = "OK";
-				response_6 = prettyXMLPrint(response.readEntity(String.class));
+			if(responsePut.getStatus() == 201){
+				newValue = responseGet.readEntity(String.class);
+				if(!newValue.equals(oldValue))
+					RESULT = "OK";
 			}
 		}else if (mediaType == MediaType.APPLICATION_JSON){
-			JSONObject measure = new JSONObject();
-			measure.put("value", "20");
-			measure.put("created", "2010-12-09");
+			JSONObject obj = new JSONObject();
+			obj.put("value", "90");
+			obj.put("created", "2011-12-09");
+			input = obj.toString();
+			
+			// Request # 7: GET /person/first_person_id/measure_Type/measure_id
+			responseGet = service.path(path).request().accept(mediaType).get(Response.class);
+			oldValue = responseGet.readEntity(String.class);
 			
 			// Request # 10: PUT /person/first_person_id/measure_Type/measure_id
-			response = service.path(path + "/").path(measure_id).request().accept(mediaType).put(Entity.entity(measure.toString(), mediaType), Response.class);
-			status_put = response.getStatus(); 
+			responsePut = service.path(path).request().accept(mediaType).put(Entity.entity(input, mediaType), Response.class);
 			
-			// Request # 6: GET /person/first_person_id/measure_Type
-			response = service.path(path).request().accept(mediaType).get(Response.class);
-			
-			if(response.getStatus() == 200 && status_put == 201){
-				RESULT = "OK";
-				response_6 = response.readEntity(String.class);
-				JSONArray arr = new JSONArray(response_6);
-				response_6 = arr.toString(4);
+			// Request # 7: GET /person/first_person_id/measure_Type/measure_id
+			responseGet = service.path(path).request().accept(mediaType).get(Response.class);
+			if(responsePut.getStatus() == 201){
+				newValue = responseGet.readEntity(String.class);
+				if(! newValue.equals(oldValue))
+					RESULT = "OK";
 			}
 		}
-		templateRequest(10, "GET", path, response, RESULT, mediaType);
-		System.out.println(response_6);
+		templateRequest(10, "PUT", path, responsePut, RESULT, mediaType);
+		System.out.println(responsePut.getStatusInfo());
 	}
 	
 	/**
@@ -604,31 +598,28 @@ public class ClientApp {
 		String RESULT = "ERROR";
 		String path = "/person/" + first_person_id + "/" + measure_Type;
 		
-		String before = "2015-11-01";
-		String after = "2015-11-15";
+		String before = "1977-12-10";
+		String after = "2015-12-10";
 		
 		// Request # 11: GET /person/first_person_id/measure_Type?before=2015-11-01&after=2015-11-15
 		Response response = service.path(path).queryParam("before", before).queryParam("after",after).request().accept(mediaType).get(Response.class);
 		String response_11 = response.readEntity(String.class);
 		
-		int count;
-		
-		if(mediaType == MediaType.APPLICATION_XML){
-			response_11 = prettyXMLPrint(response_11);
-			
-			Element rootElement = getRootElement(response_11);
-			NodeList listNode = rootElement.getChildNodes();
-			count = listNode.getLength();
-			
-			if(response.getStatus() == 200 && count>0){
-				RESULT = "OK";
+		if(response.getStatus() == 200){
+			int count = 0;
+			if(mediaType == MediaType.APPLICATION_XML){
+				Element rootElement = getRootElement(response_11);
+				NodeList listNode = rootElement.getChildNodes();
+				count = listNode.getLength();
+				response_11 = prettyXMLPrint(response_11);
+				
+			}else if(mediaType == MediaType.APPLICATION_JSON){
+				JSONArray arr =  new JSONArray(response_11); 
+				count = arr.length();
+				response_11 = arr.toString(4);
+				
 			}
-		}else if(mediaType == MediaType.APPLICATION_JSON){
-			JSONArray arr =  new JSONArray(response_11); 
-			count = arr.length();
-			response_11 = arr.toString(4);
-			
-			if(response.getStatus() == 200 && count>0){
+			if(count>0){
 				RESULT = "OK";
 			}
 		}
@@ -638,7 +629,7 @@ public class ClientApp {
 	
 	/**
 	 * Step 3.12. 
-	 * Send R#12 using the same parameters as the preivious steps. 
+	 * Send R#12 using the same parameters as the previous steps. 
 	 * If status is 200 and there is at least one person in the body, result is OK, else is ERROR
 	 * @throws Exception
 	 */
@@ -646,29 +637,27 @@ public class ClientApp {
 		String RESULT = "ERROR";
 		String path = "/person";
 		
-		Double max = 1.78;
-		Double min = 1.70;
+		Double max = 1.75;
+		Double min = 1.50;
 		
 		// Request # 12: GET /person?measureType=measure_Type&before=2015-11-01&after=2015-11-15
 		Response response = service.path(path).queryParam("measureType", measure_Type).queryParam("max", max).queryParam("min",min).request().accept(mediaType).get(Response.class);
 		String response_12 = response.readEntity(String.class);
 		
-		int count;
-		
-		if(mediaType == MediaType.APPLICATION_XML){
-			Element rootElement = getRootElement(response_12);
-			NodeList listNode = rootElement.getChildNodes();
-			count = listNode.getLength();
+		if(response.getStatus() == 200){
+			int count = 0;
+			if(mediaType == MediaType.APPLICATION_XML){
+				Element rootElement = getRootElement(response_12);
+				NodeList listNode = rootElement.getChildNodes();
+				count = listNode.getLength();
+				
+			}else if(mediaType == MediaType.APPLICATION_JSON){
+				JSONObject obj = new JSONObject(response_12);
+				JSONArray arr =  obj.getJSONArray("people"); 
+				count = arr.length();
 			
-			if(response.getStatus() == 200 && count>0){
-				RESULT = "OK";
 			}
-		}else if(mediaType == MediaType.APPLICATION_JSON){
-			JSONObject obj = new JSONObject(response_12);
-			JSONArray arr =  obj.getJSONArray("people"); 
-			count = arr.length();
-			
-			if(response.getStatus() == 200 && count>0){
+			if(count>0){
 				RESULT = "OK";
 			}
 		}
@@ -677,7 +666,7 @@ public class ClientApp {
 	}
 	
 	/**
-	 * Function that return root element
+	 * Return root element of the document XML
 	 * @param xml
 	 * @return root element
 	 * @throws ParserConfigurationException
@@ -695,17 +684,18 @@ public class ClientApp {
 	}
 
 	/**
-	 * Print the template request
-	 * @param numberRequest
-	 * @param method
-	 * @param url
-	 * @param response
-	 * @param result
-	 * @param mediaType
+	 * Prints the template for each request
+	 * @param numberRequest of the request
+	 * @param method of the request
+	 * @param path of the request
+	 * @param response of the request
+	 * @param result of the request
+	 * @param mediaType of the request
 	 */
-	public void templateRequest(int numberRequest, String method, String url, Response response, String result, String mediaType){
-		System.out.println("==================================================================================");
-		System.out.println("Request #" + numberRequest + ": "+ method + " " + url + " " + "Accept: " + mediaType + " " + "Content-Type: " + mediaType);
+	public void templateRequest(int numberRequest, String method, String path, Response response, String result, String mediaType){
+		mediaType = mediaType.toUpperCase();
+		System.out.println("======================================================================================================");
+		System.out.println("Request #" + numberRequest + ": "+ method + " " + path + " " + "Accept: " + mediaType + " " + "Content-Type: " + mediaType);
 		System.out.println("=> Result: " + result);
 		System.out.println("=> HTTP Status: " + response.getStatus());
 		System.out.println();
@@ -713,7 +703,7 @@ public class ClientApp {
 	
 	
 	/**
-	 * Print pretty XML
+	 * Prints pretty format for XML
 	 * @param xml
 	 * @return
 	 * @throws TransformerException 
@@ -734,12 +724,23 @@ public class ClientApp {
 		return xmlOutput.getWriter().toString();
 	}
 
-	
+	/**
+	 * Prints pretty format for JSON
+	 * @param jsonString
+	 * @return
+	 */
 	public String prettyJSONPrint(String jsonString){
-		JSONObject json = new JSONObject(jsonString); // Convert text to object
-		return json.toString(4); // Print it with specified indentation	
+		JSONObject json = new JSONObject(jsonString); 
+		return json.toString(4);	
 	}
 	
+	/**
+	 * Prints pretty format given a string to format and a mediaType
+	 * @param responseString
+	 * @param mediaType
+	 * @return
+	 * @throws Exception
+	 */
 	public String prettyFormatPrint(String responseString, String mediaType) throws Exception{
 		String result = null;
 		if(mediaType == "application/xml"){
