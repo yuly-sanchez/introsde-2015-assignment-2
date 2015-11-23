@@ -62,9 +62,7 @@ public class ClientApp {
 		System.out.println("Starting sdelab standalone HTTP server...");
 		System.out.println("Server started on " + getBaseURI() + "\n[kill the process to exit]");
 		
-		String mediaType = MediaType.APPLICATION_XML;
-		
-		/*int argCount = args.length;
+		int argCount = args.length;
 		String mediaType = null;
 		
 		if(argCount < 1) {
@@ -78,7 +76,7 @@ public class ClientApp {
 			}else if (method.equals("JSON")) {
 				mediaType = MediaType.APPLICATION_JSON;
 			}
-		}*/
+		}
 		System.out.println("MediaType: " + mediaType);
 		
 		try{
@@ -109,8 +107,8 @@ public class ClientApp {
      * @return
      */
 	private static URI getBaseURI() {
-		//return UriBuilder.fromUri("https://desolate-castle-6772.herokuapp.com/sdelab").build();
-		return UriBuilder.fromUri("http://127.0.1.1:5700/sdelab").build();
+		return UriBuilder.fromUri("https://desolate-castle-6772.herokuapp.com/sdelab").build();
+		//return UriBuilder.fromUri("http://127.0.1.1:5700/sdelab").build();
 	}
 
 	/**
@@ -202,7 +200,7 @@ public class ClientApp {
 					"</person>";	
 		}else if(mediaType == MediaType.APPLICATION_JSON){
 			JSONObject obj = new JSONObject();
-			obj.put("firstname", "Felipe");
+			obj.put("firstname", "Juan");
 			input = obj.toString();
 		}
 		
@@ -477,7 +475,7 @@ public class ClientApp {
 		
 		if(mediaType == MediaType.APPLICATION_XML){
 			input = "<measure>"+
-						"<value>72</value>" +
+						"<value>1.70</value>" +
 						"<created>2011-12-09</created>" + 
 					"</measure>";
 			
@@ -500,7 +498,7 @@ public class ClientApp {
 			
 		}else if (mediaType == MediaType.APPLICATION_JSON){
 			JSONObject obj = new JSONObject();
-			obj.put("value", "72");
+			obj.put("value", "1.63");
 			obj.put("created", "2011-12-09");
 			input = obj.toString();
 			
@@ -548,7 +546,7 @@ public class ClientApp {
 		
 		if(mediaType == MediaType.APPLICATION_XML){
 			input = "<measure>"+
-						"<value>90</value>" +
+						"<value>1.90</value>" +
 						"<created>2011-12-09</created>" + 
 					"</measure>";
 			
@@ -569,7 +567,7 @@ public class ClientApp {
 			}
 		}else if (mediaType == MediaType.APPLICATION_JSON){
 			JSONObject obj = new JSONObject();
-			obj.put("value", "90");
+			obj.put("value", "1.91");
 			obj.put("created", "2011-12-09");
 			input = obj.toString();
 			
