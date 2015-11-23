@@ -170,13 +170,13 @@ Update the personal information of the person identified by {id}.
 ##### Body XML
 ```xml
  <person>
-        <firstname>Felipe</firstname>
+    <firstname>Felipe</firstname>
  </person>
 ```
 ##### Body JSON
 ```json
  {
-     "firstname": "Juan"
+   "firstname": "Juan"
  } 
 ```
 ##### Response status
@@ -211,8 +211,8 @@ Create a new person and return the newly created person with its assigned id.
 ##### Body JSON
 ```json
 {
-  "firstname": "Pinco",
-  "lastname": "Pallino,
+  "firstname": "Chuck",
+  "lastname": "Norris,
   "birthdate": "1945-01-01",
   "healthprofile": [
     {
@@ -251,8 +251,8 @@ Create a new person and return the newly created person with its assigned id.
 ##### JSON
 ```json
 {
-  "firstname": "Pinco",
-  "lastname": "Pallino,
+  "firstname": "Chuck",
+  "lastname": "Norris,
   "birthdate": "1945-01-01",
   "healthprofile": [
     {
@@ -295,12 +295,12 @@ Return the list of values the history of {measureType} for person identified by 
     <measure>
         <mid>2</mid>
         <value>1.75</value>
-        <created>1978-09-02T00:00:00+02:00</created>
+        <created>1978-09-01T22:00:00Z</created>
     </measure>
     <measure>
         <mid>6</mid>
         <value>1.72</value>
-        <created>2011-12-09T00:00:00+01:00</created>
+        <created>2011-12-08T23:00:00Z</created>
     </measure>
 </measureHistory>
 
@@ -350,7 +350,7 @@ Save a new value for the {measureType} for person identified by {id}.
 ```json
 { 
   "measure": "height",
-  "value": "1.63"
+  "value": "1.70"
 }
 ```
 ##### Response status
@@ -368,7 +368,7 @@ Save a new value for the {measureType} for person identified by {id}.
 ```json
 { 
   "measure": "height",
-  "value": "1.63"
+  "value": "1.70"
  }
 ```
 * * *
@@ -424,7 +424,7 @@ Update the value for the {measureType} identified by {mid}, related to the perso
 ```json
  { 
   "measure": "height",
-  "value": "1.91"
+  "value": "1.90"
  } 
 ```
 ##### Response status
@@ -448,22 +448,17 @@ Return the history of {measureType} for person {id} in the specified range of da
     <measure>
         <mid>2</mid>
         <value>1.90</value>
-        <created>2011-12-09T00:00:00+02:00</created>
+        <created>2011-12-09T00:00:00Z</created>
     </measure>
     <measure>
         <mid>6</mid>
         <value>1.72</value>
-        <created>2011-12-08T00:00:00+01:00</created>
+        <created>2011-12-08T23:00:00Z</created>
     </measure>
     <measure>
-        <mid>7</mid>
-        <value>1.63</value>
-        <created>2011-12-09T00:00:00+01:00</created>
-    </measure>
-    <measure>
-        <mid>10</mid>
+        <mid>9</mid>
         <value>1.70</value>
-        <created>2011-12-08T00:00:00+01:00</created>
+        <created>2011-12-09T00:00:00Z</created>
     </measure>
 </measureHistory>
 ```
@@ -472,7 +467,7 @@ Return the history of {measureType} for person {id} in the specified range of da
  [
   {
     "mid": 2,
-    "value": "1.91",
+    "value": "1.90",
     "created": "2011-12-09"
   },
   {
@@ -481,8 +476,8 @@ Return the history of {measureType} for person {id} in the specified range of da
     "created": "2011-12-08"
   },
   {
-    "mid": 7,
-    "value": "1.63",
+    "mid": 9,
+    "value": "1.70",
     "created": "2011-12-09"
   }
 ]
@@ -502,22 +497,6 @@ Return the people whose {measureType} value is in the [{min}, {max}] range.
 ```xml
  <people>
     <person>
-        <id>1</id>
-        <firstname>Guido</firstname>
-        <lastname>Pugliese</lastname>
-        <birthdate>1979-12-11T23:00:00Z</birthdate>
-        <healthProfile>
-            <measureType>
-                <measure>weight</measure>
-                <value>80</value>
-            </measureType>
-            <measureType>
-                <measure>height</measure>
-                <value>1.75</value>
-            </measureType>
-        </healthProfile>
-    </person>
-    <person>
         <id>2</id>
         <firstname>Yuly</firstname>
         <lastname>Sanchez</lastname>
@@ -533,28 +512,28 @@ Return the people whose {measureType} value is in the [{min}, {max}] range.
             </measureType>
         </healthProfile>
     </person>
+    <person>
+        <id>1</id>
+        <firstname>Felipe</firstname>
+        <lastname>Pugliese</lastname>
+        <birthdate>1979-12-11T23:00:00Z</birthdate>
+        <healthProfile>
+            <measureType>
+                <measure>weight</measure>
+                <value>80</value>
+            </measureType>
+            <measureType>
+                <measure>height</measure>
+                <value>1.70</value>
+            </measureType>
+        </healthProfile>
+    </person>
 </people>
 
 ```
 ##### JSON
 ```json
  {"people": [
-    {
-        "firstname": "Guido",
-        "birthdate": "1979-12-11",
-        "healthProfile": [
-            {
-                "measure": "weight",
-                "value": "80"
-            },
-            {
-                "measure": "height",
-                "value": "1.75"
-            }
-        ],
-        "id": 1,
-        "lastname": "Pugliese"
-    },
     {
         "firstname": "Yuly",
         "birthdate": "1978-09-01",
@@ -570,7 +549,24 @@ Return the people whose {measureType} value is in the [{min}, {max}] range.
         ],
         "id": 2,
         "lastname": "Sanchez"
+    },
+    {
+        "firstname": "Felipe",
+        "birthdate": "1979-12-11",
+        "healthProfile": [
+            {
+                "measure": "weight",
+                "value": "80"
+            },
+            {
+                "measure": "height",
+                "value": "1.70"
+            }
+        ],
+        "id": 1,
+        "lastname": "Pugliese"
     }
+    
 ]}
 ```
 
