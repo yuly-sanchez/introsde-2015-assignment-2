@@ -19,8 +19,8 @@ In this **[assignment](https://sites.google.com/a/unitn.it/introsde_2015-16/lab-
 * **[build.xml](https://github.com/yuly-sanchez/introsde-2015-assignment-2/blob/master/build.xml) -** is an ant script which automates repetitive tasks directly from the command line.
 * **[ivy.xml](https://github.com/yuly-sanchez/introsde-2015-assignment-2/blob/master/ivy.xml) -** is a file which can specify the dependencies 
 * **[lifecoach.sqlite](https://github.com/yuly-sanchez/introsde-2015-assignment-2) -** is the database that presents an evolved data model
-* **[client-server-xml.log](https://github.com/yuly-sanchez/introsde-2015-assignment-2/blob/master/client-server-xml.log) -** log file of the client calling my server using format XML format
-* **[client-server-json.log](https://github.com/yuly-sanchez/introsde-2015-assignment-2/blob/master/client-server-json.log) -** log file of the client calling my server using format JSON format
+* **[client-server-xml.log](https://github.com/yuly-sanchez/introsde-2015-assignment-2/blob/master/client-server-xml.log) -** is a log file of the client calling my server using format XML format
+* **[client-server-json.log](https://github.com/yuly-sanchez/introsde-2015-assignment-2/blob/master/client-server-json.log) -** is a log file of the client calling my server using format JSON format
 
 
 ## Usage
@@ -29,8 +29,8 @@ This project contains the `ant build script` to compile source code, run tests a
  ant execute.client
 ```
 This target calls the following targets defined in the build file:
-* `execute.client.myServer.xml` send all requests to my server with the body in XML format and accept response in XML. This generate the ouput saved into [client-server-xml.log](https://github.com/yuly-sanchez/introsde-2015-assignment-2/blob/master/client-server-xml.log) file. 
-* `execute.client.myServer.json` send all requests to my server with the body in JSON format and accept response in JSON. This generate the ouput saved into [client-server-json.log](https://github.com/yuly-sanchez/introsde-2015-assignment-2/blob/master/client-server-json.log) file. 
+* `execute.client.myServer.xml` send all requests to my server with the body in XML format. This generate the ouput saved into [client-server-xml.log](https://github.com/yuly-sanchez/introsde-2015-assignment-2/blob/master/client-server-xml.log) file. 
+* `execute.client.myServer.json` send all requests to my server with the body in JSON format. This generate the ouput saved into [client-server-json.log](https://github.com/yuly-sanchez/introsde-2015-assignment-2/blob/master/client-server-json.log) file. 
 
 
 ## Services through a REST APIs
