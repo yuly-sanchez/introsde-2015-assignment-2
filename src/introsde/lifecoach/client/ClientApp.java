@@ -664,7 +664,7 @@ public class ClientApp {
 				RESULT = "OK";
 			}
 		}
-		templateRequest(12, "GET", path + "?measureType=" + measure_Type + "?max=" + max + "&min=" + min, response, RESULT, mediaType);
+		templateRequest(12, "GET", path + "?measureType=" + measure_Type + "&max=" + max + "&min=" + min, response, RESULT, mediaType);
 		System.out.println(prettyFormatPrint(response_12, mediaType));	
 	}
 	
