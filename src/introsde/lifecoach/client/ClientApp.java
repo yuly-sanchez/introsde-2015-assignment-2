@@ -39,6 +39,7 @@ import org.xml.sax.SAXException;
 
 public class ClientApp {
 
+	private String person_id = null;
 	private String first_person_id = null;
 	private String last_person_id = null;
 
@@ -61,7 +62,9 @@ public class ClientApp {
 		System.out.println("Starting sdelab standalone HTTP server...");
 		System.out.println("Server started on " + getBaseURI() + "\n[kill the process to exit]");
 		
-		int argCount = args.length;
+		String mediaType = MediaType.APPLICATION_XML;
+		
+		/*int argCount = args.length;
 		String mediaType = null;
 		
 		if(argCount < 1) {
@@ -75,7 +78,7 @@ public class ClientApp {
 			}else if (method.equals("JSON")) {
 				mediaType = MediaType.APPLICATION_JSON;
 			}
-		}
+		}*/
 		System.out.println("MediaType: " + mediaType);
 		
 		try{
@@ -106,8 +109,8 @@ public class ClientApp {
      * @return
      */
 	private static URI getBaseURI() {
-		return UriBuilder.fromUri("https://desolate-castle-6772.herokuapp.com/sdelab").build();
-		//return UriBuilder.fromUri("http://127.0.1.1:5700/sdelab").build();
+		//return UriBuilder.fromUri("https://desolate-castle-6772.herokuapp.com/sdelab").build();
+		return UriBuilder.fromUri("http://127.0.1.1:5700/sdelab").build();
 	}
 
 	/**
@@ -379,7 +382,7 @@ public class ClientApp {
 		String RESULT = "ERROR";
 		String path = "/person/";
 		
-		String person_id = null;
+		person_id = null;
 		String response_result = null;
 		
 		Response response = null;
@@ -401,21 +404,23 @@ public class ClientApp {
 					NodeList listNode = rootElement.getChildNodes();
 					
 					if(listNode.getLength()>0){
-						response_result = prettyXMLPrint(response_6);
 						person_id = personList.get(i);
 						measure_Type = m;
 						measure_id = rootElement.getFirstChild().getFirstChild().getTextContent();
 						RESULT = "OK";
+						response_result = prettyXMLPrint(response_6);
+						//System.out.println(measure_Type + " " + measure_id);
 					}
 				}else if(mediaType == MediaType.APPLICATION_JSON){
 					JSONArray arr = new JSONArray(response_6);
 					
 					if(arr.length() >0){
-						response_result = arr.toString(4);
 						person_id = personList.get(i);
 						measure_Type = m;
-						measure_id = arr.getJSONObject(i).get("mid").toString();
+						measure_id = arr.getJSONObject(0).get("mid").toString();
 						RESULT = "OK";
+						response_result = arr.toString(4);
+						//System.out.println(measure_Type + " " + measure_id);
 					}
 				}	
 			}
@@ -432,7 +437,7 @@ public class ClientApp {
 	 */
 	public void request_8(WebTarget service, String mediaType) throws Exception{
 		String RESULT = "ERROR";
-		String path = "/person/" + first_person_id + "/" + measure_Type + "/" + measure_id;
+		String path = "/person/" + person_id + "/" + measure_Type + "/" + measure_id;
 		
 		Response response = service.path(path).request().accept(mediaType).get(Response.class);
 		if(response.getStatus() == 200){
@@ -598,7 +603,7 @@ public class ClientApp {
 		String RESULT = "ERROR";
 		String path = "/person/" + first_person_id + "/" + measure_Type;
 		
-		String before = "1977-12-10";
+		String before = "1978-01-12";
 		String after = "2015-12-10";
 		
 		// Request # 11: GET /person/first_person_id/measure_Type?before=2015-11-01&after=2015-11-15
