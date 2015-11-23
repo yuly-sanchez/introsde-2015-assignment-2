@@ -45,7 +45,7 @@ public class ClientApp {
 
 	private String new_person_id = null;
 	private List<String> measure_types = null;
-
+	
 	private String measure_id = null;
 	private String measure_Type = null;
 	
@@ -61,6 +61,8 @@ public class ClientApp {
 		
 		System.out.println("Starting sdelab standalone HTTP server...");
 		System.out.println("Server started on " + getBaseURI() + "\n[kill the process to exit]");
+		
+		//String mediaType = MediaType.APPLICATION_JSON;
 		
 		int argCount = args.length;
 		String mediaType = null;
@@ -260,8 +262,8 @@ public class ClientApp {
 			
 		}else if(mediaType == MediaType.APPLICATION_JSON){	
 			JSONObject obj = new JSONObject();
-			obj.put("firstname", "Pinco");
-			obj.put("lastname", "Pallino");
+			obj.put("firstname", "Chuck");
+			obj.put("lastname", "Norris");
 			obj.put("birthdate", "1945-01-01");
 			
 	    	/*JSONObject jsonMeasure1 = new JSONObject();
@@ -497,7 +499,7 @@ public class ClientApp {
 			
 		}else if (mediaType == MediaType.APPLICATION_JSON){
 			JSONObject obj = new JSONObject();
-			obj.put("value", "1.63");
+			obj.put("value", "1.70");
 			obj.put("created", "2011-12-09");
 			input = obj.toString();
 			
@@ -565,7 +567,7 @@ public class ClientApp {
 			}
 		}else if (mediaType == MediaType.APPLICATION_JSON){
 			JSONObject obj = new JSONObject();
-			obj.put("value", "1.91");
+			obj.put("value", "1.90");
 			obj.put("created", "2011-12-09");
 			input = obj.toString();
 			
