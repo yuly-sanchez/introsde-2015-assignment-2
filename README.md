@@ -24,7 +24,7 @@ In this **[assignment](https://sites.google.com/a/unitn.it/introsde_2015-16/lab-
 
 
 ## Usage
-This project contains the `ant build script` to compile source code, run tests and generate documentationn directly from the command line:
+This project contains the `ant build script` to compile source code, run tests and generate documentation directly from the command line:
 ```
  ant execute.client
 ```
@@ -193,17 +193,17 @@ Create a new person and return the newly created person with its assigned id.
 ##### Body XML
 ```xml
  <person>
-    <firstname>Pinco</firstname>
-    <lastname>Palla</lastname>
-    <birthdate>1978-09-02</birthdate>
+    <firstname>Chuck</firstname>
+    <lastname>Norris</lastname>
+    <birthdate>1945-01-01</birthdate>
     <healthprofile>
         <measureType>
-            <measure>height</measure>
-            <value>180</value>
+            <measure>weight</measure>
+            <value>78.9</value>
         </measureType>
         <measureType>
-            <measure>weight</measure>
-            <value>86</value>
+            <measure>height</measure>
+            <value>1.73</value>
         </measureType>
     </healthprofile>
 </person>
@@ -212,15 +212,15 @@ Create a new person and return the newly created person with its assigned id.
 ```json
 {
   "firstname": "Pinco",
-  "lastname": "Palla,
-  "birthdate": "1978-09-02",
+  "lastname": "Pallino,
+  "birthdate": "1945-01-01",
   "healthprofile": [
     {
-      "value": "86",
+      "value": "78.9",
       "measure": "weight"
     },
     {
-      "value": "180",
+      "value": "1.73",
       "measure": "height"
     }
   ]
@@ -233,17 +233,17 @@ Create a new person and return the newly created person with its assigned id.
 ##### XML
 ```xml
  <person>
-    <firstname>Pinco</firstname>
-    <lastname>Palla</lastname>
-    <birthdate>1978-09-02</birthdate>
+    <firstname>Chuck</firstname>
+    <lastname>Norris</lastname>
+    <birthdate>1945-01-01</birthdate>
     <healthprofile>
         <measureType>
-            <measure>height</measure>
-            <value>180</value>
+            <measure>weight</measure>
+            <value>78.9</value>
         </measureType>
         <measureType>
-            <measure>weight</measure>
-            <value>86</value>
+            <measure>height</measure>
+            <value>1.73</value>
         </measureType>
     </healthprofile>
 </person>
@@ -252,15 +252,15 @@ Create a new person and return the newly created person with its assigned id.
 ```json
 {
   "firstname": "Pinco",
-  "lastname": "Palla,
-  "birthdate": "1978-09-02",
+  "lastname": "Pallino,
+  "birthdate": "1945-01-01",
   "healthprofile": [
     {
-      "value": "86",
+      "value": "78.9",
       "measure": "weight"
     },
     {
-      "value": "180",
+      "value": "1.73",
       "measure": "height"
     }
   ]
@@ -280,7 +280,7 @@ Delete the person identified by {id} from database.
 ```
 * * *
 #### GET /person/{id}/{measureType}
-Returns the list of values the history of {measureType} for person identified by {id}.
+Return the list of values the history of {measureType} for person identified by {id}.
 ##### Request
 ```
  GET https://desolate-castle-6772.herokuapp.com/sdelab/person/1/height
