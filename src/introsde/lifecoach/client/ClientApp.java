@@ -492,9 +492,8 @@ public class ClientApp {
 			listNode = rootElement.getChildNodes();
 			new_count_value = listNode.getLength();
 			
-			if(new_count_value > count_value){
+			if(new_count_value > count_value)
 				RESULT = "OK";
-			}
 			
 		}else if (mediaType == MediaType.APPLICATION_JSON){
 			JSONObject obj = new JSONObject();
@@ -513,16 +512,15 @@ public class ClientApp {
 			arr = new JSONArray(responseGet.readEntity(String.class));
 			new_count_value = arr.length();
 			
-			if(new_count_value > count_value){
+			if(new_count_value > count_value)
 				RESULT = "OK";
-			}
-		}
-		
-		if(responsePost.getStatus() == 200){
-			response_8 = responsePost.readEntity(String.class);
+			
 		}
 		templateRequest(8, "POST", path, responsePost, RESULT, mediaType);
-		System.out.println(prettyFormatPrint(response_8, mediaType));
+		if(responsePost.getStatus() == 200){
+			response_8 = responsePost.readEntity(String.class);
+			System.out.println(prettyFormatPrint(response_8, mediaType));
+		}
 	}
 	
 	/**
